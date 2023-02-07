@@ -10,15 +10,15 @@ CREATE TABLE `Users` (
     `googleEmail` VARCHAR(50) NOT NULL,
     `googleProfileImagePath` VARCHAR(200) NULL,
     `joinDate` Datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `scrapCount` INT NULL,
+    `scrapCount` INT NULL DEFAULT 0,
     PRIMARY KEY(userId)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Session` (
     `userId` INT NOT NULL AUTO_INCREMENT,
     `accessToken` VARCHAR(500) NOT NULL,
     PRIMARY KEY (`userId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Contributes` (
     `contributeId` INT NOT NULL AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE `Contributes` (
     `content` TEXT NOT NULL,
     `isChecked` TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`contributeId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Contents` (
     `postId` INT NOT NULL AUTO_INCREMENT,
@@ -38,7 +38,7 @@ CREATE TABLE `Contents` (
     `viewCount` INT NOT NULL DEFAULT 0,
     `scrapCount` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`postId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Contents_Code` (
     `codeId` INT NOT NULL AUTO_INCREMENT,
@@ -47,7 +47,7 @@ CREATE TABLE `Contents_Code` (
     `codeContent` TEXT NOT NULL,
     `language` VARCHAR(20) NOT NULL,
     PRIMARY KEY (`codeId`, `paragraphId`, `postId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Contents_Paragraph` (
     `paragraphId` INT NOT NULL AUTO_INCREMENT,
@@ -56,15 +56,16 @@ CREATE TABLE `Contents_Paragraph` (
     `content` TEXT NOT NULL,
     `feature` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`paragraphId`, `postId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Contents_Image` (
     `imageId` INT NOT NULL AUTO_INCREMENT,
+    `paragraphId` INT NOT NULL,
     `postId` INT NOT NULL,
     `imagePath` Varchar(200) NOT NULL,
     `detail` Varchar(200) NULL,
-    PRIMARY KEY (`imageId`, `postId`)
-);
+    PRIMARY KEY (`imageId`, `paragraphId`, `postId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE `Scrap` (
     `scrapId` INT NOT NULL AUTO_INCREMENT,
@@ -72,7 +73,7 @@ CREATE TABLE `Scrap` (
     `postId` INT NOT NULL,
     `scrapDate` Datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`scrapId`, `userId`, `postId`)
-);
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ALTER TABLE
     `Session`
@@ -97,7 +98,12 @@ ADD
 ALTER TABLE
     `Contents_Image`
 ADD
-    CONSTRAINT `FK_Contents_TO_Contents_Image_1` FOREIGN KEY (`postId`) REFERENCES `Contents` (`postId`);
+    CONSTRAINT `FK_Contents_Paragraph_TO_Contents_Image_1` FOREIGN KEY (`paragraphId`) REFERENCES `Contents_Paragraph` (`paragraphId`);
+
+ALTER TABLE
+    `Contents_Image`
+ADD
+    CONSTRAINT `FK_Contents_Paragraph_TO_Contents_Image_2` FOREIGN KEY (`postId`) REFERENCES `Contents_Paragraph` (`postId`);
 
 ALTER TABLE
     `Scrap`
