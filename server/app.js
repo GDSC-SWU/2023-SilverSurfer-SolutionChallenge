@@ -1,14 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
+import Content from "./routes/Content.js";
 
-const app = express();
+// env
 dotenv.config();
 
-app.get("/", (req, res) => {
-  res.send("hello babel");
-});
+// express
+const app = express();
+app.use(express.json());
 
-const port = process.env.SERVER_PORT;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+// routers
+app.use("/content", Content);
+
+const PORT = process.env.SERVER_PORT;
+app.listen(PORT, () => {
+  console.log(`Server listening on PORT ${PORT}`);
 });
