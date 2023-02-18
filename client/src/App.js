@@ -3,11 +3,9 @@ import { GoogleLoginButton } from "./login/GoogleLoginButton";
 
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/login" element={<GoogleLoginButton />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/login" element={<GoogleLoginButton />} />
+    </Routes>
   );
 }
 
