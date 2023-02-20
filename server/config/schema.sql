@@ -33,6 +33,7 @@ CREATE TABLE `Contents` (
     `postId` INT NOT NULL AUTO_INCREMENT,
     `category` VARCHAR(20) NULL,
     `title` VARCHAR(200) NULL,
+    `explanation` VARCHAR(500) NULL,
     `content` TEXT NULL,
     `publishDate` Datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `viewCount` INT NOT NULL DEFAULT 0,
