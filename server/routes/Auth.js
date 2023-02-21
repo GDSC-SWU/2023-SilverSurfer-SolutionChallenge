@@ -3,6 +3,8 @@ import { OAuth2Client } from "google-auth-library";
 import dotenv from "dotenv";
 import db from "../config/db.js";
 import getJWT from "../util/Jwt.js";
+import redisCli from "../util/redisCli.js";
+import validateAccessToken from "../middlewares/validateAccessToken.js";
 
 dotenv.config();
 const router = express.Router();
@@ -34,6 +36,7 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(403).send({ error: "Invalid Credential" });
+    return;
   }
 
   // DB 내 사용자 정보 존재 여부 검사
@@ -59,15 +62,15 @@ router.post("/login", async (req, res) => {
       user = rows[0];
       const query = `update Users set googleNickname="${nickname}", googleProfileImagePath="${profileImage}" where googleEmail="${user.googleEmail}";`;
       await conn.query(query);
+      conn.release();
 
       console.log("Updated Successfully.");
     }
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Server Error." });
-  } finally {
-    // db 연결 종료
     conn.release();
+    return;
   }
 
   // accessToken 발급
@@ -76,8 +79,12 @@ router.post("/login", async (req, res) => {
     conn = await db.getConnection();
     const token = getJWT({ sub, nickname, email });
 
-    // Redis Session 내 토큰 정보 저장
+    // Redis 내 토큰 정보 저장 (1 시간)
+    await redisCli.set(token, String(user.userId), {
+      EX: 60 * 60,
+    });
 
+    // 응답 전달
     res.send({
       data: {
         userId: user.userId,
