@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../config/db.js";
+import validateAccessToken from "../middlewares/validateAccessToken.js";
 
 const router = express.Router();
 let conn = null;
