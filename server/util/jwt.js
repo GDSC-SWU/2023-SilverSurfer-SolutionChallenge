@@ -9,7 +9,8 @@ const getJWT = (payload) => {
       name,
       email,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" } // 1 시간 후 만료
   );
 
   return token;
