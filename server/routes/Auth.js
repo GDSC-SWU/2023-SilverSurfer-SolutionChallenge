@@ -35,7 +35,10 @@ router.post("/login", async (req, res) => {
     profileImage = payload["picture"];
   } catch (err) {
     console.error(err);
-    res.status(403).send({ error: "Invalid Credential" });
+    res.status(403).send({
+      status: "Error",
+      message: "Invalid Credential",
+    });
     return;
   }
 
@@ -68,7 +71,10 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: "Server Error." });
+    res.status(500).send({
+      status: "Error",
+      message: "Server Error.",
+    });
     conn.release();
     return;
   }
@@ -85,16 +91,20 @@ router.post("/login", async (req, res) => {
     });
 
     // 응답 전달
-    res.send({
+    res.status(200).send({
+      status: "Success",
+      message: "Signed In Successfully.",
       data: {
         userId: user.userId,
         accessToken: token,
       },
-      message: "Signed In Successfully.",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: "Server Error." });
+    res.status(500).send({
+      status: "Error",
+      message: "Server Error.",
+    });
   } finally {
     // db 연결 종료
     conn.release();

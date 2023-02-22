@@ -36,7 +36,7 @@ function validateAccessToken(req, res, next) {
     }
 
     return res.status(errCode).json({
-      code: errCode,
+      status: "error",
       message: errMessage,
     });
   }
