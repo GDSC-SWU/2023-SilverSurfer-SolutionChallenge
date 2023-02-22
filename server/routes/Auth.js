@@ -111,4 +111,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// 로그아웃
+router.post("/logout", validateAccessToken, async (req, res) => {
+  try {
+    // Redis 내 accessToken 정보 삭제
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      status: "Error",
+      message: "Server Error.",
+    });
+  }
+});
+
 export default router;
