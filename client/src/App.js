@@ -1,11 +1,14 @@
 import { Routes, Route } from "react-router-dom";
-import { GoogleLoginButton } from "./login/GoogleLoginButton";
+import { GoogleLogin } from "./login/GoogleLogin";
+import { Container } from "./GlobalStyle";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<GoogleLoginButton />} />
-    </Routes>
+    <Container>
+      <Routes>
+        <Route path="/login" element={<GoogleLogin />} />
+      </Routes>
+    </Container>
   );
 }
 
