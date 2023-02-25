@@ -115,6 +115,15 @@ router.post("/login", async (req, res) => {
 router.post("/logout", validateAccessToken, async (req, res) => {
   try {
     // Redis 내 accessToken 정보 삭제
+    const token = req.token;
+    await redisCli.del(token);
+
+    console.log("Updated Successfully.");
+
+    res.status(200).send({
+      status: "Success",
+      message: "Signed Out Successfully.",
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send({
