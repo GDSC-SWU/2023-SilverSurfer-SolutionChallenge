@@ -14,7 +14,7 @@ function validateAccessToken(req, res, next) {
       userId = await redisCli.get(token);
     });
 
-    if (userId || userId === 0) {
+    if (userId !== null) {
       // Redis 내 토큰 존재
       req.user = userId;
       req.token = token;
