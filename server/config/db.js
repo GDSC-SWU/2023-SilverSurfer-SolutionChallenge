@@ -8,6 +8,7 @@ const connection = mysql.createPool({
   user: process.env.DATABASE_SPRINT_USER,
   password: process.env.DATABASE_SPRINT_PASSWORD,
   database: process.env.DATABASE_NAME,
+  dateStrings: true,
 });
 
 export default connection;
