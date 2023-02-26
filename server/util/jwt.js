@@ -1,16 +1,16 @@
 import jwt from "jsonwebtoken";
 
 const getJWT = (payload) => {
-  const { sub, name, email } = payload;
+  const { userId, name, email } = payload;
 
   const token = jwt.sign(
     {
-      id: sub,
+      userId,
       name,
       email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" } // 1 시간 후 만료
+    { expiresIn: 60 * 60 } // 1 시간 후 만료
   );
 
   return token;

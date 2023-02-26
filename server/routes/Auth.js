@@ -79,14 +79,16 @@ router.post("/login", async (req, res) => {
     return;
   }
 
+  const userId = user.userId;
+
   // accessToken 발급
   try {
     // db 연결 시작
     conn = await db.getConnection();
-    const token = getJWT({ sub, nickname, email });
+    const token = getJWT({ userId, nickname, email });
 
     // Redis 내 토큰 정보 저장 (1 시간)
-    await redisCli.set(token, String(user.userId), {
+    await redisCli.set(token, String(userId), {
       EX: 60 * 60,
     });
 
@@ -95,7 +97,7 @@ router.post("/login", async (req, res) => {
       status: "Success",
       message: "Signed In Successfully.",
       data: {
-        userId: user.userId,
+        userId: userId,
         accessToken: token,
       },
     });
