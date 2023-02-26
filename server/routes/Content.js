@@ -51,7 +51,6 @@ router.get("/", async (req, res) => {
 
 // 콘텐츠 세부 조회
 router.get("/:postId", async (req, res) => {
-  let errCode = 500;
   try {
     const postId = Number(req.params.postId);
     conn = await db.getConnection();
@@ -100,6 +99,128 @@ router.get("/:postId", async (req, res) => {
     res.status(errCode).json({
       status: "Error",
       message: err.message,
+    });
+  } finally {
+    conn.release();
+  }
+});
+
+// 스크랩 추가
+router.post("/scrap/:postId", validateAccessToken, async (req, res) => {
+  try {
+    const userId = req.user;
+    const postId = Number(req.params.postId);
+
+    conn = await db.getConnection();
+
+    // postId 유효성 검사
+    query = `select * from Contents where postId = ${postId}`;
+    let [rows] = await conn.query(query);
+
+    if (!rows[0]) {
+      throw new Error("Invalid PostId");
+    }
+
+    // Scrap 데이터 중복 검사
+    query = `select * from Scrap where userId = ${userId} and postId = ${postId}`;
+    [rows] = await conn.query(query);
+
+    if (rows[0] !== null) {
+      throw new Error("Already Saved Data");
+    }
+
+    // Scrap 데이터에 저장
+    query = `insert into Scrap(userId, postId) values("${userId}", "${postId}")`;
+    await conn.query(query);
+
+    // Users 데이터 내 user의 scrapCount++
+    query = `update Users set scrapCount = scrapCount + 1 where userId = ${userId}`;
+    await conn.query(query);
+
+    console.log("Updated Successfully.");
+
+    // 응답 전달
+    res.status(200).send({
+      status: "Success",
+      message: "Saved Successfully.",
+    });
+  } catch (err) {
+    console.error(err);
+
+    let errCode = 500;
+    let errMessage = "Server Error";
+
+    if (
+      err.message === "Invalid PostId" ||
+      err.message === "Already Saved Data"
+    ) {
+      errCode = 404;
+      errMessage = err.message;
+    }
+
+    res.status(errCode).send({
+      status: "Error",
+      message: errMessage,
+    });
+  } finally {
+    // db 연결 종료
+    conn.release();
+  }
+});
+
+// 스크랩 취소
+router.patch("/scrap/:postId", validateAccessToken, async (req, res) => {
+  try {
+    const userId = req.user;
+    const postId = Number(req.params.postId);
+
+    conn = await db.getConnection();
+
+    // postId 유효성 검사
+    query = `select * from Contents where postId = ${postId}`;
+    let [rows] = await conn.query(query);
+
+    if (!rows[0]) {
+      throw new Error("Invalid PostId");
+    }
+
+    // Scrap 데이터 검사
+    query = `select * from Scrap where userId = ${userId} and postId = ${postId}`;
+    [rows] = await conn.query(query);
+
+    if (!rows[0]) {
+      throw new Error("Invalid Data");
+    }
+
+    // Scrap 데이터 삭제
+    query = `delete from Scrap where userId = ${userId} and postId = ${postId}`;
+    await conn.query(query);
+
+    // User 데이터 수정
+    query = `update Users set scrapCount = scrapCount - 1 where userId = ${userId}`;
+    await conn.query(query);
+
+    console.log("Updated Successfully.");
+
+    // 응답 전달
+    res.status(200).send({
+      status: "Success",
+      message: "Updated Successfully.",
+    });
+  } catch (err) {
+    console.error(err);
+
+    let errCode = 500;
+    let errMessage = "Server Error";
+
+    if (err.message === "Invalid PostId" || err.message === "Invalid Data") {
+      errCode = 404;
+      errMessage = err.message;
+    }
+
+    res.status(errCode).send({
+      status: "Error",
+      message: errMessage,
     });
   } finally {
     conn.release();
