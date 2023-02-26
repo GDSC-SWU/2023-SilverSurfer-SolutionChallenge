@@ -62,10 +62,16 @@ router.get("/:postId", async (req, res) => {
       throw new Error("Invalid PostId");
     }
 
+    // 조회 수 증가
+    query = `update Contents set viewCount = viewCount + 1 where postId = ${postId}`;
+    await conn.query(query);
+    contentRow[0].viewCount = contentRow[0].viewCount + 1;
+
+    // 본문 데이터
     query = `select * from Contents_Paragraph where postId = ${postId}`;
     const [paraRow] = await conn.query(query);
 
-    if (paraRow[0] !== null) {
+    if (paraRow[0] !== undefined) {
       for (let i = 0; i < paraRow.length; i++) {
         let [imageRow] = [];
         let [codeRow] = [];
@@ -92,13 +98,17 @@ router.get("/:postId", async (req, res) => {
       },
     });
   } catch (err) {
+    let errCode = 500;
+    let errMessage = "Server Error";
+
     if (err.message == "Invalid PostId") {
       errCode = 404;
+      errMessage = err.message;
     }
 
     res.status(errCode).json({
       status: "Error",
-      message: err.message,
+      message: errMessage,
     });
   } finally {
     conn.release();
@@ -125,7 +135,7 @@ router.post("/scrap/:postId", validateAccessToken, async (req, res) => {
     query = `select * from Scrap where userId = ${userId} and postId = ${postId}`;
     [rows] = await conn.query(query);
 
-    if (rows[0] !== null) {
+    if (rows[0] !== undefined) {
       throw new Error("Already Saved Data");
     }
 
@@ -135,6 +145,10 @@ router.post("/scrap/:postId", validateAccessToken, async (req, res) => {
 
     // Users 데이터 내 user의 scrapCount++
     query = `update Users set scrapCount = scrapCount + 1 where userId = ${userId}`;
+    await conn.query(query);
+
+    // Contents 데이터 내 content의 scrapCount++
+    query = `update Contents set scrapCount = scrapCount + 1 where postId = ${postId}`;
     await conn.query(query);
 
     console.log("Updated Successfully.");
@@ -196,8 +210,12 @@ router.patch("/scrap/:postId", validateAccessToken, async (req, res) => {
     query = `delete from Scrap where userId = ${userId} and postId = ${postId}`;
     await conn.query(query);
 
-    // User 데이터 수정
+    // Users 데이터 내 user의 scrapCount--
     query = `update Users set scrapCount = scrapCount - 1 where userId = ${userId}`;
+    await conn.query(query);
+
+    // Contents 데이터 내 content의 scrapCount--
+    query = `update Contents set scrapCount = scrapCount - 1 where postId = ${postId}`;
     await conn.query(query);
 
     console.log("Updated Successfully.");
