@@ -50,5 +50,60 @@ router.get("/", async (req, res) => {
 });
 
 // 콘텐츠 세부 조회
+router.get("/:postId", async (req, res) => {
+  let errCode = 500;
+  try {
+    const postId = Number(req.params.postId);
+    conn = await db.getConnection();
+    query = `select * from Contents where postId = ${postId} limit 1`;
+    const [contentRow] = await conn.query(query);
+
+    // postId에 해당하는 content가 존재하지 않을 경우
+    if (!contentRow[0]) {
+      throw new Error("Invalid PostId");
+    }
+
+    query = `select * from Contents_Paragraph where postId = ${postId}`;
+    const [paraRow] = await conn.query(query);
+
+    if (paraRow[0] !== null) {
+      for (let i = 0; i < paraRow.length; i++) {
+        let [imageRow] = [];
+        let [codeRow] = [];
+
+        // 이미지 가져오기
+        query = `select imageId, imagePath, detail from Contents_Image where paragraphId = ${paraRow[i].paragraphId}`;
+        imageRow = await conn.query(query);
+
+        paraRow[i].image = imageRow[0];
+
+        // 코드 가져오기
+        query = `select codeId, codeContent, language from Contents_Code where paragraphId = ${paraRow[i].paragraphId}`;
+        codeRow = await conn.query(query);
+
+        paraRow[i].code = codeRow[0];
+      }
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        content: contentRow[0],
+        paragraphs: paraRow,
+      },
+    });
+  } catch (err) {
+    if (err.message == "Invalid PostId") {
+      errCode = 404;
+    }
+
+    res.status(errCode).json({
+      status: "Error",
+      message: err.message,
+    });
+  } finally {
+    conn.release();
+  }
+});
 
 export default router;
