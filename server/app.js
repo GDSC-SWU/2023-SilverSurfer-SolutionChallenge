@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import Content from "./routes/Content.js";
 import Auth from "./routes/Auth.js";
 import Mypage from "./routes/Mypage.js";
+import Search from "./routes/Search.js";
 
 // env
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/content", Content);
 app.use("/auth", Auth);
 app.use("/mypage", Mypage);
+app.use("/search", Search);
 
 const PORT = process.env.SERVER_PORT;
 app.listen(PORT, () => {

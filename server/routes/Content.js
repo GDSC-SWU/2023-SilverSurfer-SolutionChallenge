@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
     if (rows.length !== 0) {
       // 컨텐츠가 존재할 경우 -> 썸네일 이미지 조회
       for (let i = 0; i < rows.length; i++) {
-        query = `select paragraphId, imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
+        query = `select imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
         const [imageRows] = await conn.query(query);
 
         if (imageRows[0]) {
@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
 
     console.log("Successfully Completed.");
     res.status(200).json({
-      status: "success",
+      status: "Success",
       data: rows,
     });
   } catch (err) {
@@ -91,7 +91,7 @@ router.get("/:postId", async (req, res) => {
     }
 
     res.status(200).json({
-      status: "success",
+      status: "Success",
       data: {
         content: contentRow[0],
         paragraphs: paraRow,

@@ -72,7 +72,7 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
         query = `select imagePath from Contents_Image where postId = ${scraps[i].postId} order by paragraphId asc limit 1`;
         let [image] = await conn.query(query);
         image = image[0] === undefined ? defaultThumbnail : image[0].imagePath;
-        scraps[i].thumbnail = image;
+        scraps[i].thumbnailPath = image;
       }
     }
 
