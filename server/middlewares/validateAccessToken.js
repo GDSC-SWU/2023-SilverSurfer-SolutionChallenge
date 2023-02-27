@@ -12,7 +12,10 @@ function validateAccessToken(req, res, next) {
     jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
       // jwt 검증 과정에서 error 발생한 경우
       if (err) {
-        throw new Error("Invalid Token");
+        return res.status(401).json({
+          status: "Error",
+          message: "Invalid Token.",
+        });
       }
 
       // Redis 내 user 정보 조회
@@ -26,23 +29,17 @@ function validateAccessToken(req, res, next) {
         next();
       } else {
         // Redis 내 토큰 미존재
-        throw new Error("Invalid User");
+        return res.status(403).json({
+          status: "Error",
+          message: "Invalid User.",
+        });
       }
     });
   } catch (err) {
-    let errCode = 401;
-    let errMessage = "Invalid Token";
-
-    if (err.name === "TokenExpireError") {
-      errMessage = "Expired Token";
-    } else if (err.message === "Invalid User") {
-      errCode = 403;
-      errMessage = err.message;
-    }
-
-    return res.status(errCode).json({
-      status: "error",
-      message: errMessage,
+    console.error(err);
+    return res.status(403).json({
+      status: "Error",
+      message: "Invalid User.",
     });
   }
 }
