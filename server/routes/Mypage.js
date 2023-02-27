@@ -49,12 +49,6 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
     conn = await db.getConnection();
     let [scraps] = [];
 
-    // 기본 썸네일 설정 (메인 컬러 민무늬 이미지 -> 추후 수정)
-    query =
-      "select imagePath from Contents_Image where detail = '메인 컬러' limit 1;";
-    let [defaultThumbnail] = await conn.query(query);
-    defaultThumbnail = defaultThumbnail[0].imagePath;
-
     // 스크랩 데이터 조회
     query = `select postId, scrapDate from Scrap where userId = ${userId}`;
     [scraps] = await conn.query(query);
@@ -71,7 +65,8 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
         // thumbnail
         query = `select imagePath from Contents_Image where postId = ${scraps[i].postId} order by paragraphId asc limit 1`;
         let [image] = await conn.query(query);
-        image = image[0] === undefined ? defaultThumbnail : image[0].imagePath;
+        // 컨텐츠 내 이미지 존재 여부에 따라 썸네일 결정
+        image = image[0] === undefined ? null : image[0].imagePath;
         scraps[i].thumbnailPath = image;
       }
     }

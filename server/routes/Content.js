@@ -10,14 +10,9 @@ let query = "";
 router.get("/", async (req, res) => {
   try {
     conn = await db.getConnection();
-    query = "select postId, category, title, explanation from Contents;";
-    const [rows] = await conn.query(query);
-
-    // 기본 썸네일 설정 (메인 컬러 민무늬 이미지)
     query =
-      "select imagePath from Contents_Image where detail = '메인 컬러' limit 1;";
-    let [defaultThumbnail] = await conn.query(query);
-    defaultThumbnail = defaultThumbnail[0].imagePath;
+      "select postId, category, title, explanation from Contents order by category, postId;";
+    const [rows] = await conn.query(query);
 
     if (rows.length !== 0) {
       // 컨텐츠가 존재할 경우 -> 썸네일 이미지 조회
@@ -26,9 +21,11 @@ router.get("/", async (req, res) => {
         const [imageRows] = await conn.query(query);
 
         if (imageRows[0]) {
+          // 컨텐츠 내 이미지 존재 시
           rows[i].thumbnailPath = imageRows[0].imagePath;
         } else {
-          rows[i].thumbnailPath = defaultThumbnail;
+          // 컨텐츠 내 이미지 미존재 시
+          rows[i].thumbnailPath = null;
         }
       }
     }
