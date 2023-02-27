@@ -13,7 +13,6 @@ const client = new OAuth2Client(CLIENT_ID);
 let conn = null;
 
 let user = {};
-let sub = "";
 let email = "";
 let nickname = "";
 let profileImage = "";
@@ -29,7 +28,6 @@ router.post("/login", async (req, res) => {
     });
 
     const payload = ticket.getPayload();
-    sub = payload["sub"];
     email = payload["email"];
     nickname = payload["name"];
     profileImage = payload["picture"];
