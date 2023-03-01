@@ -1,6 +1,5 @@
 import express from "express";
 import db from "../config/db.js";
-import validateAccessToken from "../middlewares/validateAccessToken.js";
 
 const router = express.Router();
 let conn = null;
@@ -12,11 +11,16 @@ router.get("/", async (req, res) => {
     const search = req.query.search;
     conn = await db.getConnection();
     let [result] = [];
-    const check = /^[가-힣a-zA-Z\s]+$/;
+    const check = /^[0-9가-힣a-zA-Z\s]+$/; // 숫자, 완성형 한글, 영문, 띄어쓰기
     let message = "Result Loaded.";
 
     // 입력값 유효성 검사
-    if (search === null || search === "" || !check.test(search)) {
+    if (
+      search === null ||
+      search === "" ||
+      search === " " ||
+      !check.test(search)
+    ) {
       result = null;
       message = "No Result.";
     } else {
@@ -70,13 +74,19 @@ router.get("/auto", async (req, res) => {
     const search = req.body.search;
     conn = await db.getConnection();
     let [result] = [];
-    const check = /^[가-힣a-zA-Z\s]+$/;
+    const check = /^[0-9가-힣a-zA-Z\s]+$/; // 숫자, 완성형 한글, 영문, 띄어쓰기
     let message = "Result Loaded.";
 
     // 입력값 유효성 검사
-    if (search === null || search === "" || !check.test(search)) {
+    if (
+      search === null ||
+      search === "" ||
+      search === " " ||
+      !check.test(search)
+    ) {
       result = null;
       message = "No Result.";
+      console.log("ds ");
     } else {
       // 조회 수 가장 높은 결과 선택
       query = `select title from Contents where title like "%${search}%" order by viewCount desc limit 1`;
