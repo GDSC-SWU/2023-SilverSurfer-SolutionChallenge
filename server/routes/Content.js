@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
   try {
     conn = await db.getConnection();
     query =
-      "select postId, category, title, explanation from Contents order by category, postId;";
+      "select postId, category, title, title_eng, explanation from Contents order by category, postId;";
     const [rows] = await conn.query(query);
 
     if (rows.length !== 0) {
@@ -77,13 +77,13 @@ router.get("/:postId", async (req, res) => {
         query = `select imageId, imagePath, detail from Contents_Image where paragraphId = ${paraRow[i].paragraphId}`;
         imageRow = await conn.query(query);
 
-        paraRow[i].image = imageRow[0];
+        paraRow[i].image = imageRow[0].length === 0 ? null : imageRow[0];
 
         // 코드 가져오기
         query = `select codeId, codeContent, language from Contents_Code where paragraphId = ${paraRow[i].paragraphId}`;
         codeRow = await conn.query(query);
 
-        paraRow[i].code = codeRow[0];
+        paraRow[i].code = codeRow[0].length === 0 ? null : codeRow[0];
       }
     }
 

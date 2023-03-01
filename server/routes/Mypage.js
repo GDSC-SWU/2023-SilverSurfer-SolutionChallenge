@@ -58,7 +58,7 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
     if (scraps[0] !== undefined) {
       for (let i = 0; i < scraps.length; i++) {
         // title
-        query = `select title from Contents where postId = ${scraps[i].postId}`;
+        query = `select title, title_eng from Contents where postId = ${scraps[i].postId}`;
         let [title] = await conn.query(query);
         title = title[0].title;
         scraps[i].title = title;
