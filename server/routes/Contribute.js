@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
 
     conn = await db.getConnection();
 
-    // 믄지얄 유효성 검사
+    // 문자열 유효성 검사
     if (!strValidate(name) || !strValidate(email) || !strValidate(content)) {
       conn.release();
       throw new Error("Invalid Input");
