@@ -48,6 +48,7 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
     const userId = req.user;
     conn = await db.getConnection();
     let [scraps] = [];
+    let message = "Result Loaded";
 
     // 스크랩 데이터 조회
     query = `select postId, scrapDate from Scrap where userId = ${userId}`;
@@ -69,12 +70,16 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
         image = image[0] === undefined ? null : image[0].imagePath;
         scraps[i].thumbnailPath = image;
       }
+    } else {
+      scraps = null;
+      message = "No Result.";
     }
 
     console.log("Loaded Successfully.");
 
     res.status(200).json({
       status: "Success",
+      message: message,
       data: scraps,
     });
   } catch (err) {
