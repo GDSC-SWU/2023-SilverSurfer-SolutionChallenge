@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 import useScript from "./useScript";
 import { postLogin } from "../API/postLogin";
 import styled from "styled-components";
-import googleIcon from "../assets/googleIcon.svg";
+import googleIcon from "../assets/icon/googleIcon.svg";
 import bcimg from "../assets/login_bc_img.svg";
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "../components/navigation/NavigationBar";
 
 export const GoogleLogin = () => {
   const googleSignInButton = useRef(null);
@@ -55,6 +55,7 @@ const Wrapper = styled.div`
   height: 100vh;
   overflow: hidden;
   margin: -8px;
+  display: flex;
 `;
 
 const ContainerWrapper = styled.div`
@@ -65,6 +66,7 @@ const ContainerWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
+  padding-left: 7.25rem;
   // 컬러
   background-color: #f8fafb;
 `;
@@ -73,19 +75,20 @@ const BackgroundImage = styled.img`
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 80%;
+  width: 100%;
 `;
 
-const TitleText = styled.h3`
+const TitleText = styled.h6`
   font-size: 3.75rem;
   letter-spacing: -2px;
   margin: 12.5rem 0 0 0;
 `;
 
 const SubTitleText = styled.p`
-  font-size: 1rem;
+  font-size: 1.25rem;
   letter-spacing: -0.02px;
   margin: 1rem 0 6.75rem 0;
+  color: ${(props) => props.theme.colors.text_gray3};
 `;
 
 const ButtonWrapper = styled.div`
