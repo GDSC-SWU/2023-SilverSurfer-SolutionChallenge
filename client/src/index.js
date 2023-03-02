@@ -9,6 +9,8 @@ import localStorage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore, persistReducer } from "redux-persist";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ThemeProvider } from "styled-components";
+import theme from "./assets/theme";
 
 const persistConfig = {
   key: "root",
@@ -30,13 +32,15 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <React.StrictMode>
-        <BrowserRouter>
-          <GoogleOAuthProvider
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-          >
-            <App />
-          </GoogleOAuthProvider>
-        </BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            >
+              <App />
+            </GoogleOAuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
       </React.StrictMode>
     </PersistGate>
   </Provider>
