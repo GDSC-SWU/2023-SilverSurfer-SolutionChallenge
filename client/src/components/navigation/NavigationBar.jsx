@@ -1,31 +1,26 @@
 import React from "react";
 import styled from "styled-components";
+import Menu from "./Menu";
 
 function NavigationBar() {
   return (
     <div>
       <Wrapper>
-        <LogoText>Silver Surfer</LogoText>
+        <Menu />
       </Wrapper>
     </div>
   );
 }
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 4.5rem;
+  position: absolute;
+  z-index: 1;
+  width: 7.25rem;
+  height: 100vh;
   background-color: #fff;
-  padding: 0 4.5rem;
-  display: flex;
+  display: inline;
   justify-content: space-between;
-`;
-
-const LogoText = styled.h3`
-  font-size: 1.5rem;
-  margin: 0;
-  line-height: 4.5rem;
-  letter-spacing: -0.04rem;
-  font-weight: 400;
+  background-color: ${(props) => props.theme.colors.sub1};
 `;
 
 export default NavigationBar;
