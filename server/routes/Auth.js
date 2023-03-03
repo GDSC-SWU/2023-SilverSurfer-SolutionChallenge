@@ -13,7 +13,6 @@ const client = new OAuth2Client(CLIENT_ID);
 let conn = null;
 
 let user = {};
-let sub = "";
 let email = "";
 let nickname = "";
 let profileImage = "";
@@ -29,7 +28,6 @@ router.post("/login", async (req, res) => {
     });
 
     const payload = ticket.getPayload();
-    sub = payload["sub"];
     email = payload["email"];
     nickname = payload["name"];
     profileImage = payload["picture"];
@@ -79,14 +77,16 @@ router.post("/login", async (req, res) => {
     return;
   }
 
+  const userId = user.userId;
+
   // accessToken 발급
   try {
     // db 연결 시작
     conn = await db.getConnection();
-    const token = getJWT({ sub, nickname, email });
+    const token = getJWT({ userId, nickname, email });
 
     // Redis 내 토큰 정보 저장 (1 시간)
-    await redisCli.set(token, String(user.userId), {
+    await redisCli.set(token, String(userId), {
       EX: 60 * 60,
     });
 
@@ -95,7 +95,7 @@ router.post("/login", async (req, res) => {
       status: "Success",
       message: "Signed In Successfully.",
       data: {
-        userId: user.userId,
+        userId: userId,
         accessToken: token,
       },
     });
@@ -115,6 +115,15 @@ router.post("/login", async (req, res) => {
 router.post("/logout", validateAccessToken, async (req, res) => {
   try {
     // Redis 내 accessToken 정보 삭제
+    const token = req.token;
+    await redisCli.del(token);
+
+    console.log("Updated Successfully.");
+
+    res.status(200).send({
+      status: "Success",
+      message: "Signed Out Successfully.",
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send({
