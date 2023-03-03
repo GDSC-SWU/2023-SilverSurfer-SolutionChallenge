@@ -54,7 +54,6 @@ export const GoogleLogin = () => {
 const Wrapper = styled.div`
   height: 100vh;
   overflow: hidden;
-  margin: -8px;
   display: flex;
 `;
 
