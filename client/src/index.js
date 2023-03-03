@@ -11,6 +11,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider } from "styled-components";
 import theme from "./assets/theme";
+import GlobalStyle from "./GlobalStyle";
 
 const persistConfig = {
   key: "root",
@@ -38,6 +39,7 @@ root.render(
               clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             >
               <App />
+              <GlobalStyle />
             </GoogleOAuthProvider>
           </BrowserRouter>
         </ThemeProvider>
