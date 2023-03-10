@@ -2,11 +2,15 @@ import Guideline from "../components/home/Guideline";
 import Card from "../components/home/Card";
 import NavigationBar from "../components/navigation/NavigationBar";
 import styled from "styled-components";
+import bannerImage from "../assets/main_banner.jpg";
 
 export const HomePage = () => {
   return (
     <div>
-      <NavigationBar />
+      <BannerWrapper>
+        <NavigationBar />
+        <MainBannerImage src={bannerImage} />
+      </BannerWrapper>
       <Wrapper>
         <GuidelineWrapper>
           <Guideline />
@@ -42,4 +46,15 @@ const CardWrapper = styled.div`
   align-items: center;
   width: 73.25rem;
   margin: 0 auto;
+`;
+
+const BannerWrapper = styled.div`
+  display: flex;
+`;
+
+const MainBannerImage = styled.img`
+  width: 100%;
+  display: block;
+  margin-left: 7.25rem;
+  padding: 1rem;
 `;
