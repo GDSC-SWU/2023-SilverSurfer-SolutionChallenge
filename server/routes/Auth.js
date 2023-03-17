@@ -2,7 +2,7 @@ import express from "express";
 import { OAuth2Client } from "google-auth-library";
 import dotenv from "dotenv";
 import db from "../config/db.js";
-import getJWT from "../util/Jwt.js";
+import getJWT from "../util/jwt.js";
 import redisCli from "../util/redisCli.js";
 import validateAccessToken from "../middlewares/validateAccessToken.js";
 

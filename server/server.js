@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import Content from "./routes/Content.js";
 import Auth from "./routes/Auth.js";
 import Mypage from "./routes/Mypage.js";
@@ -9,9 +10,18 @@ import Contribute from "./routes/Contribute.js";
 // env
 dotenv.config();
 
+// CORS option
+var corsOptions = {
+  origin: process.env.CORS_DOMAIN,
+  credentials: true,
+};
+
 // express
 const app = express();
 app.use(express.json());
+
+// CORS
+app.use(cors(corsOptions));
 
 // routers
 app.use("/content", Content);

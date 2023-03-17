@@ -5,13 +5,14 @@ import styled from "styled-components";
 import googleIcon from "../assets/icon/googleIcon.svg";
 import bcimg from "../assets/login_bc_img.svg";
 import NavigationBar from "../components/navigation/NavigationBar";
+import { useDispatch } from "react-redux";
 
 export const GoogleLogin = () => {
   const googleSignInButton = useRef(null);
+  const dispatch = useDispatch();
 
   const onGoogleSignIn = async (res) => {
-    const result = await postLogin(res.credential);
-    console.log(result);
+    await postLogin(dispatch, res.credential);
     //콜백 함수
   };
 

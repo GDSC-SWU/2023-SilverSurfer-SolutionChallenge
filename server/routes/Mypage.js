@@ -12,11 +12,6 @@ router.get("/", validateAccessToken, async (req, res) => {
     const userId = req.user;
     conn = await db.getConnection();
 
-    // 프로필 배경 이미지
-    query = `select imagePath from Contents_Image where detail = "프로필 배경" limit 1`;
-    let [background] = await conn.query(query);
-    background = background[0].imagePath;
-
     // 프로필 정보
     query = `select * from Users where userId = ${userId}`;
     let [user] = await conn.query(query);
@@ -27,7 +22,6 @@ router.get("/", validateAccessToken, async (req, res) => {
     res.status(200).json({
       status: "Success",
       data: {
-        profileBackground: background,
         userInfo: user,
       },
     });
