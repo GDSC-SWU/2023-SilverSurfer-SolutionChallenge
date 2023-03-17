@@ -1,10 +1,9 @@
-import React from "react";
+import NavigationBar from "../components/UI/NavigationBar";
 import styled from "styled-components";
-import NavigationBar from "../components/navigation/NavigationBar";
 import guideImage from "../assets/guideImage.jpg";
 import contentImage from "../assets/contentImage.jpg";
 
-export function GuidePage() {
+function GuidePage() {
   return (
     <div>
       <BannerWrapper>
@@ -62,6 +61,8 @@ export function GuidePage() {
     </div>
   );
 }
+
+export default GuidePage;
 
 const BannerWrapper = styled.div`
   display: flex;

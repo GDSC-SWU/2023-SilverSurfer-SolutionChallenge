@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import NavigationBar from "../components/navigation/NavigationBar";
+import NavigationBar from "../components/UI/NavigationBar";
 import MyBackImage from "../assets/myBackgroundImage.jpg";
-import Card from "../components/home/Card";
+import Card from "../components/UI/Card";
 
 function MyPage() {
   return (
