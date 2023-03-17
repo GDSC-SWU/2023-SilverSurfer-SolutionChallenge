@@ -7,11 +7,11 @@ let conn = null;
 let query = "";
 
 // 콘텐츠 목록 조회 (이미지, 타이틀, 설명)
-router.get("/", async (req, res) => {
+router.get("/:category", async (req, res) => {
   try {
+    const category = req.params.category;
     conn = await db.getConnection();
-    query =
-      "select postId, category, title, title_eng, explanation from Contents order by category, postId;";
+    query = `select postId, category, title, title_eng, explanation from Contents where category = "${category}" order by category, postId;`;
     const [rows] = await conn.query(query);
 
     if (rows.length !== 0) {
