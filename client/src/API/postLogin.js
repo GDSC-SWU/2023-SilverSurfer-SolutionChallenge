@@ -13,7 +13,7 @@ export const postLogin = async (dispatch, credential) => {
     await API.post(
       "auth/login",
       {
-        auth_code: credential,
+        credential: credential,
       },
       {
         headers: {
