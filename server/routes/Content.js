@@ -47,7 +47,7 @@ router.get("/:category", async (req, res) => {
 });
 
 // 콘텐츠 세부 조회
-router.get("/:postId", async (req, res) => {
+router.get("/detail/:postId", async (req, res) => {
   try {
     const postId = Number(req.params.postId);
     conn = await db.getConnection();
