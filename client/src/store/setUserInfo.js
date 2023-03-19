@@ -17,7 +17,6 @@ function setUserInfo(dispatch, newName, newToken) {
   });
   // 사용자 로그아웃 (토큰 만료)
   const signOut = () => ({ type: "SIGNOUT" });
-  console.log(`setUserInfo ${newName} ${newToken}`);
 
   // 파라미터로 받은 newName, newToken 값에 따라 state 갱신
   if (newName !== undefined && newToken !== undefined) {
@@ -26,7 +25,7 @@ function setUserInfo(dispatch, newName, newToken) {
     dispatch(signOut());
     purge();
   } else {
-    console.log("Input Error");
+    console.error("Input Error");
   }
 }
 
