@@ -11,8 +11,9 @@ import Contribute from "./routes/Contribute.js";
 dotenv.config();
 
 // CORS option
+var whitelist = [process.env.CORS_DOMAIN, process.env.CORS_DOMAIN];
 var corsOptions = {
-  origin: process.env.CORS_DOMAIN,
+  origin: whitelist,
   credentials: true,
 };
 
