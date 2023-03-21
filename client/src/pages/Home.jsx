@@ -1,17 +1,22 @@
 import Guideline from "../components/UI/Guideline";
-import Card from "../components/UI/Card";
+
 import NavigationBar from "../components/UI/NavigationBar";
 import styled from "styled-components";
 import bannerImage from "../assets/main_banner.jpg";
-import InputBox from "../components/UI/InputBox";
+import FeedBackForm from "../components/FeedBackForm";
+import UxGuide from "../components/Card/UxGuide";
+import StyleGuide from "../components/Card/UxGuide";
+import ComponentGuide from "../components/Card/UxGuide";
+import { CardWrapper } from "../components/UI/Card";
 
 const HomePage = () => {
   return (
-    <div>
+    <>
       <BannerWrapper>
         <NavigationBar />
         <MainBannerImage src={bannerImage} />
       </BannerWrapper>
+
       <Wrapper>
         <GuidelineWrapper>
           <MainTitle>핵심 지침</MainTitle>
@@ -31,36 +36,33 @@ const HomePage = () => {
           </SubTitle>
         </TitleWrapper>
       </Wrapper>
-      <CardWrapper>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </CardWrapper>
+
+      <Wrapper>
+        <CardWrapper>
+          <UxGuide />
+        </CardWrapper>
+      </Wrapper>
+
       <Wrapper>
         <TitleWrapper>
           <MainTitle>컴포넌트</MainTitle>
           <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
         </TitleWrapper>
       </Wrapper>
-      <CardWrapper>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </CardWrapper>
+
       <Wrapper>
         <TitleWrapper>
           <MainTitle>스타일</MainTitle>
           <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
         </TitleWrapper>
       </Wrapper>
-      <CardWrapper>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </CardWrapper>
+
+      <Wrapper>
+        <CardWrapper>
+          <StyleGuide />
+        </CardWrapper>
+      </Wrapper>
+
       <Wrapper>
         <TitleWrapper>
           <MainTitle>의견 제출</MainTitle>
@@ -70,13 +72,15 @@ const HomePage = () => {
           </SubTitle>
         </TitleWrapper>
       </Wrapper>
+
       <Wrapper>
-        <form action="" method="post">
-          <InputBox />
-          <PostFormButton>보내기</PostFormButton>
-        </form>
+        <CardWrapper>
+          <ComponentGuide />
+        </CardWrapper>
       </Wrapper>
-    </div>
+
+      <FeedBackForm />
+    </>
   );
 };
 
@@ -99,15 +103,6 @@ const TitleWrapper = styled.div`
 const GuidelineWrapper = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const CardWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  width: 73.25rem;
-  margin: 0 auto;
 `;
 
 const BannerWrapper = styled.div`
@@ -134,16 +129,4 @@ const SubTitle = styled.h4`
   margin: 0.75rem 0 0 0;
   display: block;
   font-weight: 400;
-`;
-
-const PostFormButton = styled.button`
-  width: 72.7rem;
-  height: 4rem;
-  background-color: #d0d0d0;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1.5rem;
-  color: #fff;
-  margin-top: 1rem;
-  margin-bottom: 14rem;
 `;
