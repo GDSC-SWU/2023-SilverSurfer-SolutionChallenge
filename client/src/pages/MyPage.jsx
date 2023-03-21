@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
 import MyBackImage from "../assets/myBackgroundImage.jpg";
-import Card from "../components/UI/Card";
 
 function MyPage() {
   return (
@@ -24,12 +23,6 @@ function MyPage() {
         <Title>내 스크랩</Title>
         <ScrapNumber>5</ScrapNumber>
       </Wrapper>
-      <CardWrapper>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </CardWrapper>
     </div>
   );
 }
@@ -87,13 +80,4 @@ const ScrapNumber = styled.h4`
   font-weight: 500;
   margin-top: 5.875rem;
   margin-left: 1rem;
-`;
-
-const CardWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  width: 73rem;
-  margin: 0 auto;
 `;

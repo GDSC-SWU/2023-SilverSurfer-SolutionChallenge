@@ -5,13 +5,14 @@ import styled from "styled-components";
 import googleIcon from "../assets/icon/googleIcon.svg";
 import bcimg from "../assets/login_bc_img.svg";
 import NavigationBar from "../components/UI/NavigationBar";
+import { useDispatch } from "react-redux";
 
 const GoogleLogin = () => {
   const googleSignInButton = useRef(null);
+  const dispatch = useDispatch();
 
   const onGoogleSignIn = async (res) => {
-    const result = await postLogin(res.credential);
-    console.log(result);
+    await postLogin(dispatch, res.credential);
     //콜백 함수
   };
 
@@ -83,6 +84,7 @@ const TitleText = styled.h6`
   font-size: 3.75rem;
   letter-spacing: -2px;
   margin: 12.5rem 0 0 0;
+  z-index: 10;
 `;
 
 const SubTitleText = styled.p`
@@ -90,6 +92,7 @@ const SubTitleText = styled.p`
   letter-spacing: -0.02px;
   margin: 1rem 0 6.75rem 0;
   color: ${(props) => props.theme.colors.text_gray3};
+  z-index: 10;
 `;
 
 const ButtonWrapper = styled.div`
@@ -99,10 +102,12 @@ const ButtonWrapper = styled.div`
   // 스타일
   border: 1px solid #d6d6d6;
   border-radius: 5px;
+  background-color: #f8fafb;
   // 위치
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 
   cursor: pointer;
 `;
