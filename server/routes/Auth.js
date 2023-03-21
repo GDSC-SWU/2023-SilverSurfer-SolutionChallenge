@@ -1,5 +1,5 @@
 import express from "express";
-import { OAuth2Client } from "google-auth-library";
+import googleAuth from "google-auth-library";
 import dotenv from "dotenv";
 import db from "../config/db.js";
 import getJWT from "../util/jwt.js";
@@ -9,6 +9,7 @@ import validateAccessToken from "../middlewares/validateAccessToken.js";
 dotenv.config();
 const router = express.Router();
 const CLIENT_ID = process.env.FE_CLIENT_ID;
+const { OAuth2Client } = googleAuth;
 const client = new OAuth2Client(CLIENT_ID);
 let conn = null;
 
@@ -22,6 +23,7 @@ router.post("/login", async (req, res) => {
   // credential 인증
   try {
     const credential = req.body.credential;
+    console.log(credential);
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: CLIENT_ID,
