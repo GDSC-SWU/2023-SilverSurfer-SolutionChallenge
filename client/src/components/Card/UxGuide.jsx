@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 
 function UxGuide() {
   const cardData = useCardData(
-    "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute/UX 가이드라인"
+    "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/UX 가이드라인"
   );
 
   return (
