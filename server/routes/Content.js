@@ -11,24 +11,24 @@ router.get("/:category", async (req, res) => {
   try {
     const category = req.params.category;
     conn = await db.getConnection();
-    query = `select postId, category, title, title_eng, explanation from Contents where category = "${category}" order by category, postId;`;
+    query = `select postId, category, title, title_eng, explanation, thumbnailImagePath from Contents where category = "${category}" order by category, postId;`;
     const [rows] = await conn.query(query);
 
-    if (rows.length !== 0) {
-      // 컨텐츠가 존재할 경우 -> 썸네일 이미지 조회
-      for (let i = 0; i < rows.length; i++) {
-        query = `select imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
-        const [imageRows] = await conn.query(query);
+    // if (rows.length !== 0) {
+    //   // 컨텐츠가 존재할 경우 -> 썸네일 이미지 조회
+    //   for (let i = 0; i < rows.length; i++) {
+    //     query = `select imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
+    //     const [imageRows] = await conn.query(query);
 
-        if (imageRows[0]) {
-          // 컨텐츠 내 이미지 존재 시
-          rows[i].thumbnailPath = imageRows[0].imagePath;
-        } else {
-          // 컨텐츠 내 이미지 미존재 시
-          rows[i].thumbnailPath = null;
-        }
-      }
-    }
+    //     if (imageRows[0]) {
+    //       // 컨텐츠 내 이미지 존재 시
+    //       rows[i].thumbnailPath = imageRows[0].imagePath;
+    //     } else {
+    //       // 컨텐츠 내 이미지 미존재 시
+    //       rows[i].thumbnailPath = null;
+    //     }
+    //   }
+    // }
 
     console.log("Successfully Completed.");
     res.status(200).json({
@@ -52,7 +52,7 @@ router.get("/us/:category", validateAccessToken, async (req, res) => {
   try {
     const userId = req.user;
     const category = req.params.category;
-    query = `select postId, category, title, title_eng, explanation from Contents where category = "${category}" order by category, postId;`;
+    query = `select postId, category, title, title_eng, explanation, thumbnailImagePath from Contents where category = "${category}" order by category, postId;`;
     const [rows] = await conn.query(query);
 
     // 컨텐츠가 존재할 경우
@@ -61,18 +61,18 @@ router.get("/us/:category", validateAccessToken, async (req, res) => {
       query = `select postId from Scrap where userId = ${userId} order by postId`;
       const [bookmarks] = await conn.query(query);
 
-      // 썸네일 이미지 조회
       for (let i = 0; i < rows.length; i++) {
-        query = `select imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
-        const [imageRows] = await conn.query(query);
+        // // 썸네일 이미지 조회
+        // query = `select imagePath from Contents_Image where postId = ${rows[i].postId} order by paragraphId asc limit 1`;
+        // const [imageRows] = await conn.query(query);
 
-        if (imageRows[0]) {
-          // 컨텐츠 내 이미지 존재 시
-          rows[i].thumbnailPath = imageRows[0].imagePath;
-        } else {
-          // 컨텐츠 내 이미지 미존재 시
-          rows[i].thumbnailPath = null;
-        }
+        // if (imageRows[0]) {
+        //   // 컨텐츠 내 이미지 존재 시
+        //   rows[i].thumbnailPath = imageRows[0].imagePath;
+        // } else {
+        //   // 컨텐츠 내 이미지 미존재 시
+        //   rows[i].thumbnailPath = null;
+        // }
 
         // 북마크 여부
         if (bookmarks.length !== 0) {

@@ -52,17 +52,17 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
     if (scraps[0] !== undefined) {
       for (let i = 0; i < scraps.length; i++) {
         // title
-        query = `select title, title_eng from Contents where postId = ${scraps[i].postId}`;
+        query = `select title, title_eng, thumbnailImagePath from Contents where postId = ${scraps[i].postId}`;
         let [title] = await conn.query(query);
         title = title[0].title;
         scraps[i].title = title;
 
-        // thumbnail
-        query = `select imagePath from Contents_Image where postId = ${scraps[i].postId} order by paragraphId asc limit 1`;
-        let [image] = await conn.query(query);
-        // 컨텐츠 내 이미지 존재 여부에 따라 썸네일 결정
-        image = image[0] === undefined ? null : image[0].imagePath;
-        scraps[i].thumbnailPath = image;
+        // // thumbnail
+        // query = `select imagePath from Contents_Image where postId = ${scraps[i].postId} order by paragraphId asc limit 1`;
+        // let [image] = await conn.query(query);
+        // // 컨텐츠 내 이미지 존재 여부에 따라 썸네일 결정
+        // image = image[0] === undefined ? null : image[0].imagePath;
+        // scraps[i].thumbnailPath = image;
       }
     } else {
       scraps = null;
