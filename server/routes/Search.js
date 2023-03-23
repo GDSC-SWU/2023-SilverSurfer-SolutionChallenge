@@ -88,7 +88,7 @@ router.get("/auto", async (req, res) => {
       result = null;
       message = "No Result.";
     } else {
-      // 조회 수 가장 높은 결과 선택
+      // 제목들 중 조회 수 가장 높은 결과 선택
       // 한글 제목
       query = `select title from Contents where title like "%${search}%" order by viewCount desc`;
       const korResult = await conn.query(query);
@@ -108,6 +108,15 @@ router.get("/auto", async (req, res) => {
           result.push(engResult[0][i].title_eng);
         }
       }
+
+      // 카테고리
+      const categories = ["UX 가이드라인", "스타일", "컴포넌트"];
+      categories.map((item) => {
+        const isIncluded = item.includes(search);
+        if (isIncluded) {
+          result.push(item);
+        }
+      });
     }
 
     if (!result[0]) {
