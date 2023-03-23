@@ -1,9 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import Card from "../components/UI/Card";
+//import Card from "../components/UI/Card";
+import qs from "query-string";
+import API from "../API/API";
 
 function SearchResultPage() {
+  const searchParams = useLocation().search;
+  const query = qs.parse(searchParams).query;
+  const [result, setResult] = useState([]);
+
+  useEffect(() => {
+    getResult();
+  }, []);
+
+  const getResult = async () => {
+    try {
+      await API.get("/search", {
+        params: {
+          search: query,
+        },
+      }).then((res) => {
+        const response = res.data.data === null ? [] : res.data.data;
+        setResult(response);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <NavigationBar />
@@ -14,11 +40,14 @@ function SearchResultPage() {
         </SearchWrapper>
       </Wrapper>
       <ContentWrapper>
-        <Title>&apos;버튼&apos; 검색 결과가 1건 있어요.</Title>
+        <TitleWrapper>
+          <Search>&apos;{query}&apos;</Search>
+          <Title>
+            검색 결과가 <Number>{result.length}</Number>건 있어요.
+          </Title>
+        </TitleWrapper>
       </ContentWrapper>
-      <ContentWrapper>
-        <Card />
-      </ContentWrapper>
+      <ContentWrapper>{/* <Card /> */}</ContentWrapper>
     </>
   );
 }
@@ -45,10 +74,32 @@ const InputText = styled.input`
   font-size: 2.25rem;
   border: none;
   border-bottom: 1px solid #19b5d8;
+  &:focus {
+    outline: none;
+  }
 `;
 
-const Title = styled.h4`
+const TitleWrapper = styled.div``;
+
+const Search = styled.span`
   font-size: 1.5rem;
+  font-weight: 500;
+  color: #353535;
+  line-height: 100%;
+  margin-right: 0.25rem;
+`;
+
+const Title = styled.span`
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #353535;
+`;
+
+const Number = styled.span`
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #19b5d8;
+  margin-left: 0.5rem;
 `;
 
 const ContentWrapper = styled.div`
