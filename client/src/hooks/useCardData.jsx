@@ -1,11 +1,4 @@
 import { useState, useEffect } from "react";
-// import {
-//   CardImage,
-//   CardImageBox,
-//   BookmarkIcon,
-//   Title,
-//   SubTitle,
-// } from "../components/UI/Card";
 import axios from "axios";
 
 function useCardData(url) {

@@ -46,3 +46,9 @@ export const BookmarkIcon = styled.img`
   position: absolute;
   right: 2rem;
 `;
+
+export const InActiveBookmarkIcon = styled.img`
+  width: 1.5rem;
+  position: absolute;
+  right: 2rem;
+`;
