@@ -2,8 +2,25 @@ import React from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
 import MyBackImage from "../assets/myBackgroundImage.jpg";
+import { useSelector, useDispatch } from "react-redux";
+import API from "../API/API";
+import setUserInfo from "../store/setUserInfo";
 
 function MyPage() {
+  const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.accessToken);
+  const postLogout = async () => {
+    try {
+      await API.post("/auth/logout", null, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }).then(() => setUserInfo(dispatch));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <BannerWrapper>
@@ -23,6 +40,9 @@ function MyPage() {
         <Title>내 스크랩</Title>
         <ScrapNumber>5</ScrapNumber>
       </Wrapper>
+      <LogoutWrapper onClick={() => postLogout()}>
+        <Logout>로그아웃</Logout>
+      </LogoutWrapper>
     </div>
   );
 }
@@ -80,4 +100,17 @@ const ScrapNumber = styled.h4`
   font-weight: 500;
   margin-top: 5.875rem;
   margin-left: 1rem;
+`;
+
+const LogoutWrapper = styled.div`
+  cursor: pointer;
+  width: 170px;
+  height: 66px;
+  background: #dc8080;
+  margin: 0 auto;
+`;
+
+const Logout = styled.div`
+  font-size: 2.25rem;
+  text-align: center;
 `;
