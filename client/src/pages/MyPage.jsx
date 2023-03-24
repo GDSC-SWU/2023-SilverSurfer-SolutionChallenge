@@ -1,19 +1,37 @@
-import React from "react";
+import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import MyBackImage from "../assets/myBackgroundImage.jpg";
 import { useSelector, useDispatch } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import API from "../API/API";
 import setUserInfo from "../store/setUserInfo";
+import useToken from "../hooks/useToken";
+import {
+  CardImage,
+  CardImageBox,
+  Title,
+  SubTitle,
+  CardTextBox,
+  BookmarkIcon,
+  InActiveBookmarkIcon,
+} from "../components/UI/Card";
+import MyBackImage from "../assets/myBackgroundImage.jpg";
+import bookmark from "../assets/icon/icon_bookmark_active.svg";
+import inActiveBookmark from "../assets/icon/icon_bookmark_inactive.svg";
 
 function MyPage() {
-  const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.accessToken);
-  const postLogout = async () => {
+  const [itemIndex, setItemIndex] = useState({});
+  const navigation = useNavigate();
+  const isLogin = useSelector((state) => state);
+  if (!isLogin) navigation("/login");
+  const ACCESS_TOKEN = useToken();
+
+const postLogout = async () => {
     try {
       await API.post("/auth/logout", null, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
       }).then(() => setUserInfo(dispatch));
     } catch (error) {
@@ -21,29 +39,106 @@ function MyPage() {
     }
   };
 
+  const getUserData = async (url) => {
+    const { data } = await API.get(url, {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+      },
+    });
+
+    return data;
+  };
+
+  const {
+    data: mypage,
+    isFetching,
+    error,
+  } = useQuery(["mypage"], () => getUserData("/mypage"));
+
+  const { data: mypageScrap } = useQuery(["mypageScrap"], () =>
+    getUserData("/mypage/scrap")
+  );
+
+  console.log(mypageScrap);
+
+  const handleBookmark = (index, postId) => async () => {
+    console.log(`function`, postId);
+
+    setItemIndex((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+
+    await API.post(
+      `/content/scrap/${postId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    console.log(postId);
+    console.log(`request success and clicked`);
+  };
+
+  if (isFetching) {
+    <p>잠시만 기다려주세요..</p>;
+
+    return;
+  }
+
+  if (error) {
+    <p>문제가 발생했습니다. 잠시 후 시도해주세요.</p>;
+  }
+
   return (
-    <div>
+    <>
       <BannerWrapper>
         <NavigationBar />
         <MyBackgroundImage src={MyBackImage} />
       </BannerWrapper>
       <Wrapper>
-        <ProfileImage />
+        <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
       </Wrapper>
       <Wrapper>
-        <MyName>보경</MyName>
+        <MyName>{mypage.data.userInfo.googleNickname}</MyName>
       </Wrapper>
       <Wrapper>
-        <MyEmail>qkrqhrud3748@gmail.com</MyEmail>
+        <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
       </Wrapper>
       <Wrapper>
         <Title>내 스크랩</Title>
-        <ScrapNumber>5</ScrapNumber>
+        <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
       </Wrapper>
+      
+      {mypageScrap.data.map((it, i) => (
+        <Fragment key={it.postId}>
+          <CardImageBox>
+            <CardImage src={it.thumbnailPath} />
+          </CardImageBox>
+          <CardTextBox>
+            {it.bookmark || itemIndex[i] ? (
+              <BookmarkIcon
+                src={bookmark}
+                onClick={handleBookmark(i, it.postId)}
+              />
+            ) : (
+              <InActiveBookmarkIcon
+                src={inActiveBookmark}
+                onClick={handleBookmark(i, it.postId)}
+              />
+            )}
+            <Title>{it.title}</Title>
+            <SubTitle>{it.explanation}</SubTitle>
+          </CardTextBox>
+        </Fragment>
+      ))}
       <LogoutWrapper onClick={() => postLogout()}>
         <Logout>로그아웃</Logout>
       </LogoutWrapper>
-    </div>
+    </>
   );
 }
 
@@ -66,7 +161,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 11.375rem;
   height: 11.375rem;
   background-color: aliceblue;
@@ -85,13 +180,6 @@ const MyEmail = styled.h5`
   color: ${(props) => props.theme.colors.text_gray2};
   margin-top: 0.5rem;
   font-size: 1.5rem;
-`;
-
-const Title = styled.h4`
-  color: ${(props) => props.theme.colors.text_gray1};
-  font-size: 2.25rem;
-  font-weight: 500;
-  margin-top: 5.875rem;
 `;
 
 const ScrapNumber = styled.h4`
