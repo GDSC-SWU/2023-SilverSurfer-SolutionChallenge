@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import styled from "styled-components";
 import API from "../../API/API";
 
@@ -29,32 +31,39 @@ function CardDetail() {
       </ParagraphContainer>
     ) : (
       <SolutionContainer>
-        <TagWrapper>
-          <Tag>{p.type}</Tag>
+        <TagWrapper type={p.type}>
+          <Tag type={p.type}>{p.type}</Tag>
         </TagWrapper>
         <ParagraphContainer>
           <SubTitle>{p.subTitle}</SubTitle>
-          <ContentWrapper>
-            <Content>
-              {p.content.split("\n").map((item) => (
-                <Content key={item}>{item}</Content>
-              ))}
-            </Content>
-          </ContentWrapper>
+          {p.content && (
+            <ContentWrapper>
+              <Content>
+                {p.content.split("\n").map((item) => (
+                  <Content key={item}>{item}</Content>
+                ))}
+              </Content>
+            </ContentWrapper>
+          )}
           <ImageWrapper>
             {p.image && <Image src={p.image[0].imagePath} />}
           </ImageWrapper>
         </ParagraphContainer>
         {p.code && (
-          <CodeContainer>
-            <CodeTagWrapper>
-              <CodeTag>{`코드`}</CodeTag>
-            </CodeTagWrapper>
-            <SubTitle>{`이렇게 구현하면 돼요`}</SubTitle>
-            <CodeWrapper>
-              <Code>{p.code[0].codeContent}</Code>
-            </CodeWrapper>
-          </CodeContainer>
+          <CodeWrapper>
+            <SyntaxHighlighter
+              language={p.code[0].language}
+              style={github}
+              customStyle={{
+                background: "#EDF3F4",
+                border: "1px solid #000000",
+                borderRadius: "5px",
+                fontFamily: "cursive",
+              }}
+            >
+              {p.code[0].codeContent}
+            </SyntaxHighlighter>
+          </CodeWrapper>
         )}
       </SolutionContainer>
     );
@@ -127,15 +136,14 @@ const SolutionContainer = styled.div``;
 const ParagraphContainer = styled.div``;
 
 const TagWrapper = styled.div`
-  background: rgba(0, 159, 115, 0.04);
+  background: ${(props) =>
+    props.type === "해결책" ? "rgba(0, 159, 115, 0.04)" : "#F5F0F4"};
   border-radius: 4px;
 `;
 
-const Tag = styled.div``;
-
-const CodeTagWrapper = styled.div``;
-
-const CodeTag = styled.div``;
+const Tag = styled.div`
+  color: ${(props) => (props.type === "해결책" ? "#19B5D8" : "#CD78A5")};
+`;
 
 const SubTitle = styled.h2`
   font-weight: 500;
@@ -146,7 +154,7 @@ const SubTitle = styled.h2`
 
 const ContentWrapper = styled.div``;
 
-const Content = styled.p`
+const Content = styled.div`
   font-size: 1.25rem;
   font-weight: 400;
   line-height: 29px;
@@ -158,10 +166,6 @@ const ImageWrapper = styled.div``;
 
 const Image = styled.img``;
 
-const CodeContainer = styled.div``;
-
 const CodeWrapper = styled.div``;
-
-const Code = styled.div``;
 
 export default CardDetail;
