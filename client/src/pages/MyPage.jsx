@@ -21,13 +21,14 @@ import bookmark from "../assets/icon/icon_bookmark_active.svg";
 import inActiveBookmark from "../assets/icon/icon_bookmark_inactive.svg";
 
 function MyPage() {
+  const dispatch = useDispatch();
   const [itemIndex, setItemIndex] = useState({});
   const navigation = useNavigate();
   const isLogin = useSelector((state) => state);
   if (!isLogin) navigation("/login");
   const ACCESS_TOKEN = useToken();
 
-const postLogout = async () => {
+  const postLogout = async () => {
     try {
       await API.post("/auth/logout", null, {
         headers: {
@@ -112,7 +113,7 @@ const postLogout = async () => {
         <Title>내 스크랩</Title>
         <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
       </Wrapper>
-      
+
       {mypageScrap.data.map((it, i) => (
         <Fragment key={it.postId}>
           <CardImageBox>
