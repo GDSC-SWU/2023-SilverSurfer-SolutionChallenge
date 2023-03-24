@@ -5,8 +5,8 @@ import styled from "styled-components";
 import bannerImage from "../assets/main_banner.jpg";
 import FeedBackForm from "../components/FeedBackForm";
 import UxGuide from "../components/Card/UxGuide";
-import StyleGuide from "../components/Card/UxGuide";
-import ComponentGuide from "../components/Card/UxGuide";
+import StyleGuide from "../components/Card/StyleGuide";
+// import ComponentGuide from "../components/Card/ComponentGuide";
 import { CardWrapper } from "../components/UI/Card";
 
 const HomePage = () => {
@@ -74,9 +74,7 @@ const HomePage = () => {
       </Wrapper>
 
       <Wrapper>
-        <CardWrapper>
-          <ComponentGuide />
-        </CardWrapper>
+        <CardWrapper>{/* <ComponentGuide /> */}</CardWrapper>
       </Wrapper>
 
       <FeedBackForm />

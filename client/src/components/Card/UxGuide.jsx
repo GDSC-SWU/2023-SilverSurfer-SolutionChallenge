@@ -1,4 +1,5 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { useSelector } from "react-redux";
 import useCardData from "../../hooks/useCardData";
 import {
   CardImage,
@@ -7,29 +8,78 @@ import {
   SubTitle,
   CardTextBox,
   BookmarkIcon,
+  InActiveBookmarkIcon,
 } from "../UI/Card";
-// import bookmark from "../assets/icon_bookmark_active.svg";
 import bookmark from "../../assets/icon/icon_bookmark_active.svg";
-import { Link } from "react-router-dom";
+import inActiveBookmark from "../../assets/icon/icon_bookmark_inactive.svg";
+// import { Link } from "react-router-dom";
+import useLoginCardData from "../../hooks/useLoginCardData";
+import API from "../../API/API";
+import useToken from "../../hooks/useToken";
 
 function UxGuide() {
-  const cardData = useCardData(
-    "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/UX 가이드라인"
-  );
+  const ACCESS_TOKEN = useToken();
+  const [itemIndex, setItemIndex] = useState({});
+
+  const authState = useSelector((state) => state);
+
+  console.log(ACCESS_TOKEN);
+
+  const cardData = !authState.user
+    ? useCardData(
+        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/UX 가이드라인"
+      )
+    : useLoginCardData(
+        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/us/UX 가이드라인"
+      );
+
+  const handleBookmark = (index, postId) => async () => {
+    console.log(`function`, postId);
+
+    setItemIndex((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+
+    await API.post(
+      `/content/scrap/${postId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    console.log(postId);
+    console.log(`request success and clicked`);
+  };
 
   return (
     <>
-      {cardData?.data?.map((it) => (
-        <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
+      {cardData?.data?.map((it, i) => (
+        // <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
+        <Fragment key={it.postId}>
           <CardImageBox>
             <CardImage src={it.thumbnailPath} />
           </CardImageBox>
           <CardTextBox>
-            <BookmarkIcon src={bookmark} />
+            {it.bookmark || itemIndex[i] ? (
+              <BookmarkIcon
+                src={bookmark}
+                onClick={handleBookmark(i, it.postId)}
+              />
+            ) : (
+              <InActiveBookmarkIcon
+                src={inActiveBookmark}
+                onClick={handleBookmark(i, it.postId)}
+              />
+            )}
             <Title>{it.title}</Title>
             <SubTitle>{it.explanation}</SubTitle>
           </CardTextBox>
-        </Link>
+        </Fragment>
+        // </Link>
       ))}
     </>
   );
