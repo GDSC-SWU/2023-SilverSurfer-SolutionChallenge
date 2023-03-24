@@ -71,13 +71,12 @@ router.get("/", async (req, res) => {
 
 // 검색어 자동완성
 router.get("/auto", async (req, res) => {
+  conn = await db.getConnection();
   try {
-    const search = req.body.search;
-    conn = await db.getConnection();
-    let [result] = [];
+    const search = req.query.search;
+    let result = [];
     const check = /^[0-9가-힣a-zA-Z\s]+$/; // 숫자, 완성형 한글, 영문, 띄어쓰기
     let message = "Result Loaded.";
-    let isEng = false;
 
     // 입력값 유효성 검사
     if (
@@ -88,23 +87,39 @@ router.get("/auto", async (req, res) => {
     ) {
       result = null;
       message = "No Result.";
-      console.log("ds ");
     } else {
-      // 조회 수 가장 높은 결과 선택
-      query = `select title from Contents where title like "%${search}%" order by viewCount desc limit 1`;
-      [result] = await conn.query(query);
+      // 제목들 중 조회 수 가장 높은 결과 선택
+      // 한글 제목
+      query = `select title from Contents where title like "%${search}%" order by viewCount desc`;
+      const korResult = await conn.query(query);
 
-      if (!result[0]) {
-        query = `select title_eng from Contents where title_eng like "%${search}%" order by viewCount desc limit 1`;
-        [result] = await conn.query(query);
-        isEng = !isEng;
+      if (korResult[0][0] !== undefined) {
+        for (let i = 0; i < korResult[0].length; i++) {
+          result.push(korResult[0][i].title);
+        }
       }
+
+      // 영문 제목
+      query = `select title_eng from Contents where title_eng like "%${search}%" order by viewCount desc`;
+      const engResult = await conn.query(query);
+
+      if (engResult[0][0] !== undefined) {
+        for (let i = 0; i < engResult[0].length; i++) {
+          result.push(engResult[0][i].title_eng);
+        }
+      }
+
+      // 카테고리
+      const categories = ["UX 가이드라인", "스타일", "컴포넌트"];
+      categories.map((item) => {
+        const isIncluded = item.includes(search);
+        if (isIncluded) {
+          result.push(item);
+        }
+      });
     }
 
-    if (result !== null && result[0] !== undefined) {
-      // 자동완성 결과가 존재 (검색 결과 영문 여부에 따라 결과값 선택)
-      result = isEng ? result[0].title_eng : result[0].title;
-    } else {
+    if (!result[0]) {
       // 자동완성 결과가 없음
       result = null;
       message = "No Result.";

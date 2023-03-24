@@ -1,13 +1,106 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import API from "../../API/API";
+import searchIcon from "../../assets/icon/icon_search.svg";
 
 function Search() {
+  const navigation = useNavigate();
+  const [keywords, setKeywords] = useState([]); // 자동완성 결과
+  const input = useRef(""); // 입력값
+  const getKeyword = async (search) => {
+    try {
+      await API.get("/search/auto", {
+        params: {
+          search: search,
+        },
+      }).then((res) => {
+        const result = res.data.data === null ? [] : res.data.data;
+        setKeywords(result);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onInputChange = (e) => {
+    const value = e.target.value;
+    input.current = value;
+    const check = /^[0-9가-힣a-zA-Z\s]+$/; // 숫자, 완성형 한글, 영문, 띄어쓰기
+    if (value !== " " && value !== "" && value !== null && check.test(value)) {
+      getKeyword(value);
+    } else {
+      const result = [];
+      setKeywords(result);
+    }
+  };
+
+  const onSearch = () => {
+    // 검색 버튼 클릭 or 엔터
+    navigation(`/search?query=${input.current}`);
+  };
+
+  const handleOnKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  };
+
+  const matchInput = (word) => {
+    const result = [];
+    for (let i = 0; i < word.length; i++) {
+      if (input.current.includes(word[i])) {
+        result.push(
+          <MatchedKeyword key={`${i}_${word[i]}`}>{word[i]}</MatchedKeyword>
+        );
+      } else {
+        result.push(
+          <UnmatchedKeyword key={`${i}_${word[i]}`}>{word[i]}</UnmatchedKeyword>
+        );
+      }
+    }
+
+    return result;
+  };
+
   return (
     <div>
       <Wrapper>
         <ModalBackground>
           <ModalWrapper>
-            <InputText placeholder="검색어를 입력해주세요" />
+            <form>
+              <InputWrapper>
+                <InputText
+                  placeholder="검색어를 입력해주세요"
+                  onChange={(e) => onInputChange(e)}
+                  onKeyDown={handleOnKeyDown}
+                />
+                <label htmlFor="searchBtn">
+                  <SearchButton src={searchIcon} />
+                </label>
+                <input
+                  id="searchBtn"
+                  type="button"
+                  style={{ display: "none" }}
+                  onClick={() => onSearch()}
+                />
+              </InputWrapper>
+            </form>
+            {keywords.length !== 0 && (
+              <AutoKeywordContainer>
+                {keywords.map((word, idx) => (
+                  <AutoKeywordWrapper
+                    key={idx}
+                    onClick={() => {
+                      input.current = word;
+                      onSearch();
+                    }}
+                  >
+                    {matchInput(word)}
+                  </AutoKeywordWrapper>
+                ))}
+              </AutoKeywordContainer>
+            )}
             <Title>최근 검색어</Title>
             <ItemWrapper>
               <Item>버튼</Item>
@@ -45,8 +138,42 @@ const ModalWrapper = styled.div`
   padding: 1rem;
 `;
 
+const InputWrapper = styled.div`
+  display: flex;
+`;
+
 const InputText = styled.input`
-  width: 100%;
+  width: 38.75rem;
+  height: 4rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  font-size: 2.25rem;
+  border: none;
+  border-bottom: 1px solid #19b5d8;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const SearchButton = styled.img`
+  margin-bottom: 0.8125rem;
+  margin-left: -2.6rem;
+`;
+
+const AutoKeywordContainer = styled.div`
+  position: fixed;
+  background: #ffffff;
+`;
+
+const AutoKeywordWrapper = styled.div`
+  display: flex;
+  cursor: pointer;
+`;
+
+const UnmatchedKeyword = styled.span``;
+
+const MatchedKeyword = styled.span`
+  color: #19b5d8;
 `;
 
 const Title = styled.h4`
@@ -60,6 +187,7 @@ const ItemWrapper = styled.div`
   align-items: center;
   flex-direction: row;
 `;
+
 const Item = styled.div`
   font-size: 1rem;
   padding: 0.5rem;

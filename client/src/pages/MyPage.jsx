@@ -1,12 +1,12 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import MyBackImage from "../assets/myBackgroundImage.jpg";
+import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import API from "../API/API";
-import useToken from "../hooks/useToken";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import API from "../API/API";
+import setUserInfo from "../store/setUserInfo";
+import useToken from "../hooks/useToken";
 import {
   CardImage,
   CardImageBox,
@@ -16,19 +16,28 @@ import {
   BookmarkIcon,
   InActiveBookmarkIcon,
 } from "../components/UI/Card";
+import MyBackImage from "../assets/myBackgroundImage.jpg";
 import bookmark from "../assets/icon/icon_bookmark_active.svg";
 import inActiveBookmark from "../assets/icon/icon_bookmark_inactive.svg";
 
 function MyPage() {
   const [itemIndex, setItemIndex] = useState({});
-
   const navigation = useNavigate();
-
   const isLogin = useSelector((state) => state);
-
   if (!isLogin) navigation("/login");
-
   const ACCESS_TOKEN = useToken();
+
+const postLogout = async () => {
+    try {
+      await API.post("/auth/logout", null, {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }).then(() => setUserInfo(dispatch));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getUserData = async (url) => {
     const { data } = await API.get(url, {
@@ -103,7 +112,7 @@ function MyPage() {
         <Title>내 스크랩</Title>
         <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
       </Wrapper>
-
+      
       {mypageScrap.data.map((it, i) => (
         <Fragment key={it.postId}>
           <CardImageBox>
@@ -126,6 +135,9 @@ function MyPage() {
           </CardTextBox>
         </Fragment>
       ))}
+      <LogoutWrapper onClick={() => postLogout()}>
+        <Logout>로그아웃</Logout>
+      </LogoutWrapper>
     </>
   );
 }
@@ -176,4 +188,17 @@ const ScrapNumber = styled.h4`
   font-weight: 500;
   margin-top: 5.875rem;
   margin-left: 1rem;
+`;
+
+const LogoutWrapper = styled.div`
+  cursor: pointer;
+  width: 170px;
+  height: 66px;
+  background: #dc8080;
+  margin: 0 auto;
+`;
+
+const Logout = styled.div`
+  font-size: 2.25rem;
+  text-align: center;
 `;
