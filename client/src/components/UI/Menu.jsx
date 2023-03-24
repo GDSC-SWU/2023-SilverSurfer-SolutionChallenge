@@ -8,40 +8,48 @@ import icon_style from "../../assets/icon/icon_menu_style.svg";
 import icon_communication from "../../assets/icon/icon_menu_communication.svg";
 import icon_my from "../../assets/icon/icon_menu_my.svg";
 import icon_search from "../../assets/icon/icon_menu_search.svg";
+import { Link } from "react-router-dom";
 
 export default function Menu() {
   return (
     <div>
       <MenuWrapper>
-        <MenuContentBox>
+        <MenuContentBox to={"/"}>
           <MenuIcon src={icon_main} />
           <MenuText>메인</MenuText>
         </MenuContentBox>
+
         <MenuContentBox>
           <MenuIcon src={icon_key} />
           <MenuText>핵심 지침</MenuText>
         </MenuContentBox>
+
         <MenuContentBox>
           <MenuIcon src={icon_project} />
           <MenuText>프로젝트 소개</MenuText>
         </MenuContentBox>
+
         <MenuContentBox>
           <MenuIcon src={icon_component} />
           <MenuText>컴포넌트</MenuText>
         </MenuContentBox>
+
         <MenuContentBox>
           <MenuIcon src={icon_style} />
           <MenuText>스타일</MenuText>
         </MenuContentBox>
+
         <MenuContentBox>
           <MenuIcon src={icon_communication} />
           <MenuText>의견 제출</MenuText>
         </MenuContentBox>
       </MenuWrapper>
+
       <SubMenuWrapper>
-        <SubMenuContentBox>
+        <SubMenuContentBox to={"/mypage"}>
           <SubMenuIcon src={icon_my} />
         </SubMenuContentBox>
+
         <SubMenuContentBox>
           <SubMenuIcon src={icon_search} />
         </SubMenuContentBox>
@@ -56,7 +64,7 @@ const MenuWrapper = styled.div`
   margin-top: 3rem;
 `;
 
-const MenuContentBox = styled.div`
+const MenuContentBox = styled(Link)`
   width: 100%;
   height: 5.4rem;
   display: flex;
@@ -87,7 +95,7 @@ const SubMenuWrapper = styled.div`
   justify-content: center;
 `;
 
-const SubMenuContentBox = styled.div`
+const SubMenuContentBox = styled(Link)`
   width: 5rem;
   height: 5rem;
   display: flex;

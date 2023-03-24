@@ -23,7 +23,6 @@ router.post("/login", async (req, res) => {
   // credential 인증
   try {
     const credential = req.body.credential;
-    console.log(credential);
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: CLIENT_ID,
