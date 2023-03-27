@@ -23,7 +23,7 @@ function UxGuide() {
 
   const authState = useSelector((state) => state);
 
-  console.log(ACCESS_TOKEN);
+  //console.log(ACCESS_TOKEN);
 
   const cardData = !authState.user
     ? useCardData(
