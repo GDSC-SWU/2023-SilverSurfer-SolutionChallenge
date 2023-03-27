@@ -145,7 +145,7 @@ function CardDetail() {
               ))}
             </ContentWrapper>
           )}
-          <ImageWrapper>
+          <ImageWrapper type={type}>
             {p.image && <Image src={p.image[0].imagePath} />}
           </ImageWrapper>
         </ProblemWrapper>
@@ -167,7 +167,7 @@ function CardDetail() {
                 ))}
               </ContentWrapper>
             )}
-            <ImageWrapper>
+            <ImageWrapper type={type}>
               {p.image && <Image src={p.image[0].imagePath} />}
             </ImageWrapper>
           </ParagraphWrapper>
@@ -391,15 +391,15 @@ const Content = styled.div`
 
 const ImageWrapper = styled.div`
   width: 960px;
-  height: 370px;
+  height: ${(props) => (props.type === "문제점" ? "370px" : "780px")};
   background: #f1f1f1;
   border-radius: 1.25rem;
   margin-top: 2.75rem;
 `;
 
 const Image = styled.img`
-  width: 960px;
-  height: 370px;
+  width: 100%;
+  height: 100%;
   border-radius: 1.25rem;
   object-fit: cover;
 `;

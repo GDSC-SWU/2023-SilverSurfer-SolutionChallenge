@@ -112,6 +112,7 @@ const IndexItem = styled.span`
   padding: 0.625rem 5.1875rem 0.625rem 0.875rem;
   border: ${(props) => props.isCurrent && "1px solid #878787"};
   border-radius: 17px;
+  cursor: pointer;
 `;
 
 export default IndexBar;
