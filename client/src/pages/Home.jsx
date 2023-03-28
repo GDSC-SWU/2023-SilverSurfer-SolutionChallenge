@@ -6,8 +6,7 @@ import bannerImage from "../assets/main_banner.jpg";
 import FeedBackForm from "../components/FeedBackForm";
 import UxGuide from "../components/Card/UxGuide";
 import StyleGuide from "../components/Card/StyleGuide";
-// import ComponentGuide from "../components/Card/ComponentGuide";
-import { CardWrapper } from "../components/UI/Card";
+import ComponentGuide from "../components/Card/ComponentGuide";
 
 const HomePage = () => {
   return (
@@ -30,7 +29,7 @@ const HomePage = () => {
       </Wrapper>
       <Wrapper>
         <TitleWrapper>
-          <MainTitle>UX 가이드</MainTitle>
+          <MainTitle>UX 가이드라인</MainTitle>
           <SubTitle>
             장노년층 사용자를 고려하기 위한 5가지 UX 가이드라인
           </SubTitle>
@@ -38,9 +37,9 @@ const HomePage = () => {
       </Wrapper>
 
       <Wrapper>
-        <CardWrapper>
+        <CardBoxWrapper>
           <UxGuide />
-        </CardWrapper>
+        </CardBoxWrapper>
       </Wrapper>
 
       <Wrapper>
@@ -51,6 +50,12 @@ const HomePage = () => {
       </Wrapper>
 
       <Wrapper>
+        <CardBoxWrapper>
+          <ComponentGuide />
+        </CardBoxWrapper>
+      </Wrapper>
+
+      <Wrapper>
         <TitleWrapper>
           <MainTitle>스타일</MainTitle>
           <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
@@ -58,9 +63,9 @@ const HomePage = () => {
       </Wrapper>
 
       <Wrapper>
-        <CardWrapper>
+        <CardBoxWrapper>
           <StyleGuide />
-        </CardWrapper>
+        </CardBoxWrapper>
       </Wrapper>
 
       <Wrapper>
@@ -71,10 +76,6 @@ const HomePage = () => {
             좋은 접근성을 제공하는데 있어 큰 도움이 됩니다.{" "}
           </SubTitle>
         </TitleWrapper>
-      </Wrapper>
-
-      <Wrapper>
-        <CardWrapper>{/* <ComponentGuide /> */}</CardWrapper>
       </Wrapper>
 
       <FeedBackForm />
@@ -101,6 +102,15 @@ const TitleWrapper = styled.div`
 const GuidelineWrapper = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const CardBoxWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-direction: row;
+  width: 73.25rem;
+  flex-wrap: wrap;
 `;
 
 const BannerWrapper = styled.div`

@@ -1,16 +1,23 @@
 import styled from "styled-components";
 
+export const CardWrappers = styled.div`
+  float: inline-start;
+  flex-direction: row;
+`;
+
 export const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
+  margin-right: 1rem;
 `;
 
 export const CardImageBox = styled.div`
   width: 23rem;
   height: 12.5rem;
   border-radius: 1.75rem 1.75rem 0 0;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #aed2da;
+  box-sizing: border-box;
 `;
 
 export const CardImage = styled.img`
@@ -19,9 +26,9 @@ export const CardImage = styled.img`
 
 export const CardTextBox = styled.div`
   width: 23rem;
-  height: 8rem;
+  height: 9rem;
   border-radius: 0 0 1.75rem 1.75rem;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #aed2da;
   margin-top: -1px;
   background-color: ${(props) => props.theme.colors.sub1};
   padding: 1rem 2rem;
