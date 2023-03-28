@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import useCardData from "../../hooks/useCardData";
 import {
+  CardWrapper,
   CardImage,
   CardImageBox,
   Title,
@@ -58,24 +59,26 @@ function UxGuide() {
       {cardData?.data?.map((it, i) => (
         // <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
         <Fragment key={it.postId}>
-          <CardImageBox>
-            <CardImage src={it.thumbnailPath} />
-          </CardImageBox>
-          <CardTextBox>
-            {it.bookmark || itemIndex[i] ? (
-              <BookmarkIcon
-                src={bookmark}
-                onClick={handleBookmark(i, it.postId)}
-              />
-            ) : (
-              <InActiveBookmarkIcon
-                src={inActiveBookmark}
-                onClick={handleBookmark(i, it.postId)}
-              />
-            )}
-            <Title>{it.title}</Title>
-            <SubTitle>{it.explanation}</SubTitle>
-          </CardTextBox>
+          <CardWrapper>
+            <CardImageBox>
+              <CardImage src={it.thumbnailPath} />
+            </CardImageBox>
+            <CardTextBox>
+              {it.bookmark || itemIndex[i] ? (
+                <BookmarkIcon
+                  src={bookmark}
+                  onClick={handleBookmark(i, it.postId)}
+                />
+              ) : (
+                <InActiveBookmarkIcon
+                  src={inActiveBookmark}
+                  onClick={handleBookmark(i, it.postId)}
+                />
+              )}
+              <Title>{it.title}</Title>
+              <SubTitle>{it.explanation}</SubTitle>
+            </CardTextBox>
+          </CardWrapper>
         </Fragment>
         // </Link>
       ))}
