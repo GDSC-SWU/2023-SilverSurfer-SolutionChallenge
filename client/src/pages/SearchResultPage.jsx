@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-//import Card from "../components/UI/Card";
+// import Card from "../components/Card/UxGuide";
 import qs from "query-string";
 import API from "../API/API";
+import searchIcon from "../assets/icon/icon_search.svg";
 
 function SearchResultPage() {
   const searchParams = useLocation().search;
@@ -37,6 +38,9 @@ function SearchResultPage() {
       <Wrapper>
         <SearchWrapper>
           <InputText placeholder="검색어를 입력해주세요" />
+          <label htmlFor="searchBtn">
+            <SearchButton src={searchIcon} />
+          </label>
         </SearchWrapper>
       </Wrapper>
       <ContentWrapper>
@@ -105,10 +109,15 @@ const Number = styled.span`
 const ContentWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   width: 73.25rem;
   margin: 0 auto;
+`;
+
+const SearchButton = styled.img`
+  margin-bottom: 0.8125rem;
+  margin-left: -3rem;
 `;
 
 export default SearchResultPage;
