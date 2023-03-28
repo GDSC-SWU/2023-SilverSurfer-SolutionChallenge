@@ -1,3 +1,5 @@
 runtime: nodejs
 env: flex
 service: server-1
+automatic_scaling:
+  max_num_instances: 1

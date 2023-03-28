@@ -11,8 +11,8 @@ function NavigationBar() {
 }
 
 const Wrapper = styled.div`
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 100;
   width: 7.25rem;
   height: 100vh;
   background-color: #fff;

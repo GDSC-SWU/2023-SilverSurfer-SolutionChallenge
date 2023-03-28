@@ -16,7 +16,7 @@ const HomePage = () => {
         <MainBannerImage src={bannerImage} />
       </BannerWrapper>
 
-      <Wrapper>
+      <Wrapper id="core">
         <GuidelineWrapper>
           <MainTitle>핵심 지침</MainTitle>
           <SubTitle>
@@ -27,7 +27,7 @@ const HomePage = () => {
           <Guideline />
         </GuidelineWrapper>
       </Wrapper>
-      <Wrapper>
+      <Wrapper id="ux">
         <TitleWrapper>
           <MainTitle>UX 가이드라인</MainTitle>
           <SubTitle>
@@ -42,7 +42,7 @@ const HomePage = () => {
         </CardBoxWrapper>
       </Wrapper>
 
-      <Wrapper>
+      <Wrapper id="component">
         <TitleWrapper>
           <MainTitle>컴포넌트</MainTitle>
           <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
@@ -54,8 +54,8 @@ const HomePage = () => {
           <ComponentGuide />
         </CardBoxWrapper>
       </Wrapper>
-
-      <Wrapper>
+      
+      <Wrapper id="style">
         <TitleWrapper>
           <MainTitle>스타일</MainTitle>
           <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
@@ -68,7 +68,7 @@ const HomePage = () => {
         </CardBoxWrapper>
       </Wrapper>
 
-      <Wrapper>
+      <Wrapper id="contribute">
         <TitleWrapper>
           <MainTitle>의견 제출</MainTitle>
           <SubTitle>

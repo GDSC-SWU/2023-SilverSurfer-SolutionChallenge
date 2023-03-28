@@ -23,7 +23,6 @@ function UxGuide() {
   const [itemIndex, setItemIndex] = useState({});
 
   const authState = useSelector((state) => state);
-
   const cardData = !authState.userName
     ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/UX 가이드라인`)
     : useLoginCardData(
