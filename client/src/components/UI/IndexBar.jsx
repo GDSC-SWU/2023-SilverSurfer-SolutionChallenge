@@ -21,6 +21,7 @@ const IndexBar = ({ title, index, indexElements }) => {
   const getCurrentPosition = () => {
     const halfOfWindow = window.innerHeight / 2 - 70;
     indexElements.map((item, idx) => {
+      if (!item) return;
       const distance = item.offsetTop - window.scrollY;
       if (distance < halfOfWindow) {
         setCurrent(idx);
