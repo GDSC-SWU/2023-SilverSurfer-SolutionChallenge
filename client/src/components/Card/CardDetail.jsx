@@ -7,13 +7,14 @@ import Select from "react-select";
 import API from "../../API/API";
 import NavigationBar from "../UI/NavigationBar";
 import IndexBar from "../UI/IndexBar";
+import thumbnail_background from "../../assets/thumbnailBackgroundImage.png";
 
 function CardDetail() {
   const { postId } = useParams();
   const [detailData, setDetailData] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [index, setIndex] = useState([]);
   const [lang, setLang] = useState("");
-  const options = useRef([]);
-  const index = useRef([]);
   const indexRef = useRef([]);
 
   const getData = async () => {
@@ -21,7 +22,6 @@ function CardDetail() {
       await API.get(`/content/detail/${postId}`).then((res) => {
         const data = res.data.data;
         setDetailData(data);
-        console.log(data);
       });
     } catch (error) {
       console.error(error);
@@ -32,10 +32,11 @@ function CardDetail() {
     if (detailData.length === 0 || detailData.paragraphs.length === 0) return;
 
     const codeData = [];
+    const optionList = [...options];
 
     detailData.paragraphs.map((item) => {
       if (item.type === "코드") {
-        if (item.code.length === options.current.length) return;
+        if (item.code.length === options.length) return;
         item.code.map((value) => {
           codeData.push(value);
         });
@@ -44,25 +45,29 @@ function CardDetail() {
 
     if (codeData.length !== 0) {
       codeData.map((item) => {
-        options.current.push({
+        optionList.push({
           value: item.language.toLowerCase(),
           label: item.language,
         });
       });
     }
-  }, [detailData, options]);
+
+    setOptions(optionList);
+  }, [detailData]);
 
   useEffect(() => {
     if (detailData.length === 0 || detailData.paragraphs.length === 0) return;
-    if (detailData.paragraphs.length === index.current.length) return;
+    if (detailData.paragraphs.length === index.length) return;
+
+    const indexList = [...index];
 
     detailData.paragraphs.map((item) => {
       const type = item.type === "코드" ? "구현코드" : item.type;
-      index.current.push(type);
+      indexList.push(type);
     });
 
-    console.log(indexRef.current);
-  }, [detailData, index]);
+    setIndex(indexList);
+  }, [detailData]);
 
   const Language = () => {
     const onChange = (value) => {
@@ -117,18 +122,20 @@ function CardDetail() {
 
     return (
       <>
-        <Select
-          styles={customStyle}
-          value={options.current.find((op) => {
-            return op.value === lang;
-          })}
-          onChange={(value) => {
-            onChange(value.value);
-          }}
-          options={options.current}
-          isSearchable={false}
-          defaultValue={options.current[0]}
-        />
+        {options.length !== 0 && (
+          <Select
+            styles={customStyle}
+            value={options.find((op) => {
+              return op.value === lang;
+            })}
+            onChange={(value) => {
+              onChange(value.value);
+            }}
+            options={options}
+            isSearchable={false}
+            defaultValue={options[0]}
+          />
+        )}
       </>
     );
   };
@@ -237,32 +244,39 @@ function CardDetail() {
     <Container>
       <GlobalStyle />
       <NavigationBar />
-      {detailData.content && (
-        <TopContainer>
-          <TopWrapper>
-            <TitleContainer>
-              <MainTitle>{detailData.content.title}</MainTitle>
-              <MainTitleEng>{detailData.content.title_eng}</MainTitleEng>
-              <Explanation>{detailData.content.explanation}</Explanation>
-            </TitleContainer>
-            <ImageContainer>
-              {detailData.content.thumbnailImagePath && (
-                <MainImage src={detailData.content.thumbnailImagePath} />
-              )}
-            </ImageContainer>
-          </TopWrapper>
-          <IndexBar
-            title={detailData.content.title}
-            index={index.current}
-            indexElements={indexRef.current}
-          />
-        </TopContainer>
-      )}
-      <ContentsContainer>
-        {detailData.paragraphs && (
-          <Contents paragraphs={detailData.paragraphs} />
+      <Wrapper>
+        {detailData.content && (
+          <div>
+            <TopWrapper>
+              <TitleContainer>
+                <MainTitle>{detailData.content.title}</MainTitle>
+                <MainTitleEng>{detailData.content.title_eng}</MainTitleEng>
+                <Explanation>{detailData.content.explanation}</Explanation>
+              </TitleContainer>
+              <ImageContainer>
+                <BackgroundWrapper>
+                  <BackgroundImage src={thumbnail_background} />
+                </BackgroundWrapper>
+                {detailData.content.thumbnailImagePath && (
+                  <MainImageWrapper>
+                    <MainImage src={detailData.content.thumbnailImagePath} />
+                  </MainImageWrapper>
+                )}
+              </ImageContainer>
+            </TopWrapper>
+            <IndexBar
+              title={detailData.content.title}
+              index={index}
+              indexElements={indexRef.current}
+            />
+          </div>
         )}
-      </ContentsContainer>
+        <ContentsContainer>
+          {detailData.paragraphs && (
+            <Contents paragraphs={detailData.paragraphs} />
+          )}
+        </ContentsContainer>
+      </Wrapper>
     </Container>
   );
 }
@@ -277,7 +291,7 @@ const Container = styled.div`
   padding-bottom: 6.625rem;
 `;
 
-const TopContainer = styled.div`
+const Wrapper = styled.div`
   margin-left: 7.25rem;
 `;
 
@@ -328,6 +342,22 @@ const Explanation = styled.p`
   word-break: keep-all;
 `;
 
+const BackgroundWrapper = styled.div`
+  position: relative;
+`;
+
+const BackgroundImage = styled.img`
+  width: 647px;
+  height: 428px;
+  border-radius: 30px;
+  object-fit: cover;
+`;
+
+const MainImageWrapper = styled.div`
+  position: absolute;
+  top: 10px;
+`;
+
 const MainImage = styled.img`
   width: 647px;
   height: 428px;
@@ -338,6 +368,7 @@ const MainImage = styled.img`
 const ContentsContainer = styled.div`
   width: 960px;
   margin: 0 auto;
+  padding-right: 7.25rem;
 `;
 
 const ParagraphContainer = styled.div`
