@@ -8,6 +8,7 @@ import API from "../API/API";
 import setUserInfo from "../store/setUserInfo";
 import useToken from "../hooks/useToken";
 import {
+  CardWrapper,
   CardImage,
   CardImageBox,
   Title,
@@ -94,52 +95,62 @@ function MyPage() {
 
   return (
     <>
-      <BannerWrapper>
-        <NavigationBar />
-        <MyBackgroundImage src={MyBackImage} />
-      </BannerWrapper>
-      <Wrapper>
-        <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
-      </Wrapper>
-      <NameLogoutWrapper>
-        <MyName>{mypage.data.userInfo.googleNickname}</MyName>
-        <LogoutWrapper onClick={() => postLogout()}>
-          <Logout>로그아웃</Logout>
-        </LogoutWrapper>
-      </NameLogoutWrapper>
-      <Wrapper></Wrapper>
-      <Wrapper>
-        <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
-      </Wrapper>
-      <Wrapper>
-        <Title>내 스크랩</Title>
-        <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
-      </Wrapper>
-
-      {mypageScrap?.data?.map((it, i) => (
-        <Fragment key={it.postId}>
-          <CardImageBox>
-            <CardImage src={it.thumbnailPath} />
-          </CardImageBox>
-          <CardTextBox>
-            {itemIndex[i] ? (
-              <InActiveBookmarkIcon src={inActiveBookmark} />
-            ) : (
-              <BookmarkIcon
-                src={bookmark}
-                onClick={handleBookmark(it.postId)}
-              />
-            )}
-            <Title>{it.title}</Title>
-            <SubTitle>{it.explanation}</SubTitle>
-          </CardTextBox>
-        </Fragment>
-      ))}
+      <MyPageContentBox>
+        <BannerWrapper>
+          <NavigationBar />
+          <MyBackgroundImage src={MyBackImage} />
+        </BannerWrapper>
+        <Wrapper>
+          <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
+        </Wrapper>
+        <NameLogoutWrapper>
+          <MyName>{mypage.data.userInfo.googleNickname}</MyName>
+          <LogoutWrapper onClick={() => postLogout()}>
+            <Logout>로그아웃</Logout>
+          </LogoutWrapper>
+        </NameLogoutWrapper>
+        <Wrapper>
+          <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
+        </Wrapper>
+        <Wrapper>
+          <Title>내 스크랩</Title>
+          <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
+        </Wrapper>
+        <Wrapper>
+          <CardBoxWrapper>
+            {mypageScrap?.data?.map((it, i) => (
+              <Fragment key={it.postId}>
+                <CardWrapper>
+                  <CardImageBox>
+                    <CardImage src={it.thumbnailPath} />
+                  </CardImageBox>
+                  <CardTextBox>
+                    {itemIndex[i] ? (
+                      <InActiveBookmarkIcon src={inActiveBookmark} />
+                    ) : (
+                      <BookmarkIcon
+                        src={bookmark}
+                        onClick={handleBookmark(it.postId)}
+                      />
+                    )}
+                    <Title>{it.title}</Title>
+                    <SubTitle>{it.explanation}</SubTitle>
+                  </CardTextBox>
+                </CardWrapper>
+              </Fragment>
+            ))}
+          </CardBoxWrapper>
+        </Wrapper>
+      </MyPageContentBox>
     </>
   );
 }
 
 export default MyPage;
+
+const MyPageContentBox = styled.div`
+  margin-bottom: 10rem;
+`;
 
 const BannerWrapper = styled.div`
   display: flex;
@@ -185,7 +196,7 @@ const MyEmail = styled.h5`
   color: ${(props) => props.theme.colors.text_gray2};
   margin-top: 0.5rem;
   font-size: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 `;
 
 const ScrapNumber = styled.h4`
@@ -210,4 +221,13 @@ const LogoutWrapper = styled.div`
 const Logout = styled.div`
   font-size: 2.25rem;
   text-align: center;
+`;
+
+const CardBoxWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-direction: row;
+  width: 73.25rem;
+  flex-wrap: wrap;
 `;
