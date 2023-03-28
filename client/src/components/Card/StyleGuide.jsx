@@ -23,9 +23,6 @@ function StyleGuide() {
   const [itemIndex, setItemIndex] = useState({});
 
   const authState = useSelector((state) => state);
-
-  console.log(ACCESS_TOKEN);
-
   const cardData = !authState.userName
     ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/스타일`)
     : useLoginCardData(
@@ -33,8 +30,6 @@ function StyleGuide() {
       );
 
   const handleBookmark = (index, postId) => async () => {
-    console.log(`function`, postId);
-
     setItemIndex((prev) => ({
       ...prev,
       [index]: !prev[index],
@@ -49,9 +44,6 @@ function StyleGuide() {
         },
       }
     );
-
-    console.log(postId);
-    console.log(`request success and clicked`);
   };
 
   return (

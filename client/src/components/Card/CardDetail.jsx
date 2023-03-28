@@ -14,7 +14,6 @@ function CardDetail() {
       await API.get(`/content/detail/${postId}`).then((res) => {
         const data = res.data.data;
         setDetailData(data);
-        console.log(data);
       });
     } catch (error) {
       console.error(error);

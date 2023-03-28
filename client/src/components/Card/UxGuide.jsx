@@ -24,8 +24,6 @@ function UxGuide() {
 
   const authState = useSelector((state) => state);
 
-  console.log(ACCESS_TOKEN);
-
   const cardData = !authState.userName
     ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/UX 가이드라인`)
     : useLoginCardData(
@@ -33,8 +31,6 @@ function UxGuide() {
       );
 
   const handleBookmark = (index, postId) => async () => {
-    console.log(`function`, postId);
-
     setItemIndex((prev) => ({
       ...prev,
       [index]: !prev[index],
@@ -49,9 +45,6 @@ function UxGuide() {
         },
       }
     );
-
-    console.log(postId);
-    console.log(`request success and clicked`);
   };
 
   return (

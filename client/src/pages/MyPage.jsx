@@ -60,8 +60,6 @@ function MyPage() {
     getUserData("/mypage/scrap")
   );
 
-  console.log(mypageScrap);
-
   const handleBookmark = (postId) => async () => {
     setItemIndex((prev) => ({
       ...prev,
