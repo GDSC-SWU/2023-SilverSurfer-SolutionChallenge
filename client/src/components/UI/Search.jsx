@@ -140,6 +140,7 @@ const ModalWrapper = styled.div`
 
 const InputWrapper = styled.div`
   display: flex;
+  align-items: flex-end;
 `;
 
 const InputText = styled.input`
@@ -149,7 +150,7 @@ const InputText = styled.input`
   box-sizing: border-box;
   font-size: 2.25rem;
   border: none;
-  border-bottom: 1px solid #19b5d8;
+  border-bottom: 1px solid #353535;
   &:focus {
     outline: none;
   }
@@ -157,17 +158,27 @@ const InputText = styled.input`
 
 const SearchButton = styled.img`
   margin-bottom: 0.8125rem;
-  margin-left: -2.6rem;
+  margin-left: -3rem;
 `;
 
 const AutoKeywordContainer = styled.div`
   position: fixed;
-  background: #ffffff;
+  margin-top: -0.5rem;
+  background: #353535;
+  width: 25.5rem;
+  border-radius: 0.75rem;
+  height: auto;
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
 `;
 
 const AutoKeywordWrapper = styled.div`
   display: flex;
   cursor: pointer;
+  margin: 1.25rem;
+  box-sizing: border-box;
+  font-size: 1.25rem;
+  color: #fff;
 `;
 
 const UnmatchedKeyword = styled.span``;
@@ -179,6 +190,8 @@ const MatchedKeyword = styled.span`
 const Title = styled.h4`
   font-size: 1.25rem;
   font-weight: 400;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
 `;
 
 const ItemWrapper = styled.div`
@@ -191,7 +204,7 @@ const ItemWrapper = styled.div`
 const Item = styled.div`
   font-size: 1rem;
   padding: 0.5rem;
-  border: 1px solid #000;
+  border: 1px solid #878787;
   border-radius: 0.25rem;
   margin-right: 0.75rem;
 `;
