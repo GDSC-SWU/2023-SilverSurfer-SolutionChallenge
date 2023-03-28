@@ -1,9 +1,9 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import { useSelector, useDispatch } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+// import { useNavigate } from "react-router-dom";
 import API from "../API/API";
 import setUserInfo from "../store/setUserInfo";
 import useToken from "../hooks/useToken";
@@ -23,10 +23,9 @@ import inActiveBookmark from "../assets/icon/icon_bookmark_inactive.svg";
 function MyPage() {
   const dispatch = useDispatch();
   const [itemIndex, setItemIndex] = useState({});
-  const navigation = useNavigate();
-  const isLogin = useSelector((state) => state);
-  if (!isLogin) navigation("/login");
+  // const navigation = useNavigate();
   const ACCESS_TOKEN = useToken();
+  const queryClient = useQueryClient();
 
   const postLogout = async () => {
     try {
@@ -62,12 +61,10 @@ function MyPage() {
 
   console.log(mypageScrap);
 
-  const handleBookmark = (index, postId) => async () => {
-    console.log(`function`, postId);
-
+  const handleBookmark = (postId) => async () => {
     setItemIndex((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [postId]: !prev[postId],
     }));
 
     await API.post(
@@ -80,8 +77,9 @@ function MyPage() {
       }
     );
 
-    console.log(postId);
-    console.log(`request success and clicked`);
+    // alert("삭제되었습니다.");
+
+    queryClient.invalidateQueries(["mypageScrap"]);
   };
 
   if (isFetching) {
@@ -103,9 +101,13 @@ function MyPage() {
       <Wrapper>
         <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
       </Wrapper>
-      <Wrapper>
+      <NameLogoutWrapper>
         <MyName>{mypage.data.userInfo.googleNickname}</MyName>
-      </Wrapper>
+        <LogoutWrapper onClick={() => postLogout()}>
+          <Logout>로그아웃</Logout>
+        </LogoutWrapper>
+      </NameLogoutWrapper>
+      <Wrapper></Wrapper>
       <Wrapper>
         <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
       </Wrapper>
@@ -114,21 +116,18 @@ function MyPage() {
         <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
       </Wrapper>
 
-      {mypageScrap.data.map((it, i) => (
+      {mypageScrap?.data?.map((it, i) => (
         <Fragment key={it.postId}>
           <CardImageBox>
             <CardImage src={it.thumbnailPath} />
           </CardImageBox>
           <CardTextBox>
-            {it.bookmark || itemIndex[i] ? (
+            {itemIndex[i] ? (
+              <InActiveBookmarkIcon src={inActiveBookmark} />
+            ) : (
               <BookmarkIcon
                 src={bookmark}
-                onClick={handleBookmark(i, it.postId)}
-              />
-            ) : (
-              <InActiveBookmarkIcon
-                src={inActiveBookmark}
-                onClick={handleBookmark(i, it.postId)}
+                onClick={handleBookmark(it.postId)}
               />
             )}
             <Title>{it.title}</Title>
@@ -136,9 +135,6 @@ function MyPage() {
           </CardTextBox>
         </Fragment>
       ))}
-      <LogoutWrapper onClick={() => postLogout()}>
-        <Logout>로그아웃</Logout>
-      </LogoutWrapper>
     </>
   );
 }
@@ -162,6 +158,14 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
+const NameLogoutWrapper = styled.div`
+  width: 73rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+`;
+
 const ProfileImage = styled.img`
   width: 11.375rem;
   height: 11.375rem;
@@ -181,22 +185,26 @@ const MyEmail = styled.h5`
   color: ${(props) => props.theme.colors.text_gray2};
   margin-top: 0.5rem;
   font-size: 1.5rem;
+  margin-bottom: 2rem;
 `;
 
 const ScrapNumber = styled.h4`
   color: ${(props) => props.theme.colors.main};
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 500;
-  margin-top: 5.875rem;
   margin-left: 1rem;
 `;
 
 const LogoutWrapper = styled.div`
   cursor: pointer;
-  width: 170px;
-  height: 66px;
-  background: #dc8080;
-  margin: 0 auto;
+  height: 3.2rem;
+  background: #d0d5db;
+  margin-top: 8rem;
+  font-size: 1.5rem;
+  color: #fff;
+  padding: 0.5rem 1.75rem;
+  line-height: 3.2rem;
+  border-radius: 0.5rem;
 `;
 
 const Logout = styled.div`
