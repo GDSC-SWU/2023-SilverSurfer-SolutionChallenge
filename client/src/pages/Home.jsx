@@ -29,7 +29,7 @@ const HomePage = () => {
       </Wrapper>
       <Wrapper>
         <TitleWrapper>
-          <MainTitle>UX 가이드</MainTitle>
+          <MainTitle>UX 가이드라인</MainTitle>
           <SubTitle>
             장노년층 사용자를 고려하기 위한 5가지 UX 가이드라인
           </SubTitle>
