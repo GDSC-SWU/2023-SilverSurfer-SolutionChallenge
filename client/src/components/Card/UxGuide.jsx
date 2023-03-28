@@ -25,12 +25,10 @@ function UxGuide() {
 
   console.log(ACCESS_TOKEN);
 
-  const cardData = !authState.user
-    ? useCardData(
-        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/UX 가이드라인"
-      )
+  const cardData = !authState.userName
+    ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/UX 가이드라인`)
     : useLoginCardData(
-        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/us/UX 가이드라인"
+        `${process.env.REACT_APP_API_BASE_URL}/content/us/UX 가이드라인`
       );
 
   const handleBookmark = (index, postId) => async () => {

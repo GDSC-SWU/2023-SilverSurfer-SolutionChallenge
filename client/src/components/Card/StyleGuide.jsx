@@ -12,7 +12,7 @@ import bookmark from "../../assets/icon/icon_bookmark_active.svg";
 
 function StyleGuide() {
   const cardData = useCardData(
-    "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/content/스타일"
+    `${process.env.REACT_APP_API_BASE_URL}/content/스타일`
   );
 
   return (
