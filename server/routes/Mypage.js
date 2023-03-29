@@ -52,10 +52,12 @@ router.get("/scrap", validateAccessToken, async (req, res) => {
     if (scraps[0] !== undefined) {
       for (let i = 0; i < scraps.length; i++) {
         // title
-        query = `select title, title_eng, thumbnailImagePath from Contents where postId = ${scraps[i].postId}`;
-        let [title] = await conn.query(query);
-        title = title[0].title;
-        scraps[i].title = title;
+        query = `select title, title_eng, explanation, thumbnailImagePath from Contents where postId = ${scraps[i].postId}`;
+        let [rows] = await conn.query(query);
+        scraps[i].title = rows[0].title;
+        scraps[i].title_eng = rows[0].title_eng;
+        scraps[i].explanation = rows[0].explanation;
+        scraps[i].thumbnailImagePath = rows[0].thumbnailImagePath;
 
         // // thumbnail
         // query = `select imagePath from Contents_Image where postId = ${scraps[i].postId} order by paragraphId asc limit 1`;

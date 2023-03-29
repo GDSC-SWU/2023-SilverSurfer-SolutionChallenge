@@ -21,7 +21,6 @@ function Guideline() {
 
 const Wrapper = styled.div`
   display: flex;
-  width: 73.75rem;
   margin-top: 3.375rem;
 `;
 

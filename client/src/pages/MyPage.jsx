@@ -1,9 +1,9 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from "../API/API";
 import setUserInfo from "../store/setUserInfo";
 import useToken from "../hooks/useToken";
@@ -24,9 +24,10 @@ import inActiveBookmark from "../assets/icon/icon_bookmark_inactive.svg";
 function MyPage() {
   const dispatch = useDispatch();
   const [itemIndex, setItemIndex] = useState({});
-  // const navigation = useNavigate();
+  const navigate = useNavigate();
   const ACCESS_TOKEN = useToken();
   const queryClient = useQueryClient();
+  const authState = useSelector((state) => state);
 
   const postLogout = async () => {
     try {
@@ -34,13 +35,23 @@ function MyPage() {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
-      }).then(() => setUserInfo(dispatch));
+      }).then(() => {
+        setUserInfo(dispatch);
+        alert("로그아웃 되었습니다.");
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
   const getUserData = async (url) => {
+    const current = new Date().getTime();
+    if (current >= authState.expireTime) {
+      setUserInfo(dispatch);
+      alert("로그아웃 되었습니다. 다시 로그인 해주세요.");
+      window.location.replace("/login");
+    }
+
     const { data } = await API.get(url, {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -91,6 +102,11 @@ function MyPage() {
     <p>문제가 발생했습니다. 잠시 후 시도해주세요.</p>;
   }
 
+  const onClick = (postId) => {
+    navigate(`/content/${postId}`);
+    location.reload();
+  };
+
   return (
     <>
       <MyPageContentBox>
@@ -98,47 +114,51 @@ function MyPage() {
           <NavigationBar />
           <MyBackgroundImage src={MyBackImage} />
         </BannerWrapper>
-        <Wrapper>
-          <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
-        </Wrapper>
-        <NameLogoutWrapper>
-          <MyName>{mypage.data.userInfo.googleNickname}</MyName>
-          <LogoutWrapper onClick={() => postLogout()}>
-            <Logout>로그아웃</Logout>
-          </LogoutWrapper>
-        </NameLogoutWrapper>
-        <Wrapper>
-          <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
-        </Wrapper>
-        <Wrapper>
-          <Title>내 스크랩</Title>
-          <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
-        </Wrapper>
-        <Wrapper>
-          <CardBoxWrapper>
-            {mypageScrap?.data?.map((it, i) => (
-              <Fragment key={it.postId}>
-                <CardWrapper>
-                  <CardImageBox>
-                    <CardImage src={it.thumbnailPath} />
-                  </CardImageBox>
-                  <CardTextBox>
-                    {itemIndex[i] ? (
-                      <InActiveBookmarkIcon src={inActiveBookmark} />
-                    ) : (
-                      <BookmarkIcon
-                        src={bookmark}
-                        onClick={handleBookmark(it.postId)}
-                      />
-                    )}
-                    <Title>{it.title}</Title>
-                    <SubTitle>{it.explanation}</SubTitle>
-                  </CardTextBox>
-                </CardWrapper>
-              </Fragment>
-            ))}
-          </CardBoxWrapper>
-        </Wrapper>
+        <Container>
+          <Wrapper>
+            <ProfileImage src={mypage.data.userInfo.googleProfileImagePath} />
+          </Wrapper>
+          <NameLogoutWrapper>
+            <MyName>{mypage.data.userInfo.googleNickname}</MyName>
+            <LogoutWrapper onClick={() => postLogout()}>
+              <Logout>로그아웃</Logout>
+            </LogoutWrapper>
+          </NameLogoutWrapper>
+          <Wrapper>
+            <MyEmail>{mypage.data.userInfo.googleEmail}</MyEmail>
+          </Wrapper>
+          <Wrapper>
+            <Title>내 스크랩</Title>
+            <ScrapNumber>{mypage.data.userInfo.scrapCount}</ScrapNumber>
+          </Wrapper>
+          <Wrapper>
+            <CardBoxWrapper>
+              {mypageScrap?.data?.map((it, i) => (
+                <Fragment key={it.postId}>
+                  <CardWrapper>
+                    <CardImageBox onClick={() => onClick(it.postId)}>
+                      <CardImage src={it.thumbnailImagePath} />
+                    </CardImageBox>
+                    <CardTextBox>
+                      {itemIndex[i] ? (
+                        <InActiveBookmarkIcon src={inActiveBookmark} />
+                      ) : (
+                        <BookmarkIcon
+                          src={bookmark}
+                          onClick={handleBookmark(it.postId)}
+                        />
+                      )}
+                      <Title onClick={() => onClick(it.postId)}>
+                        {it.title}
+                      </Title>
+                      <SubTitle>{it.explanation}</SubTitle>
+                    </CardTextBox>
+                  </CardWrapper>
+                </Fragment>
+              ))}
+            </CardBoxWrapper>
+          </Wrapper>
+        </Container>
       </MyPageContentBox>
     </>
   );
@@ -157,6 +177,10 @@ const BannerWrapper = styled.div`
 const MyBackgroundImage = styled.img`
   width: 100%;
   height: 19.375rem;
+`;
+
+const Container = styled.div`
+  margin-left: 8.25rem;
 `;
 
 const Wrapper = styled.div`

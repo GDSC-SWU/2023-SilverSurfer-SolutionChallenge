@@ -292,7 +292,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  margin-left: 7.25rem;
+  margin-left: 8.25rem;
 `;
 
 const TopWrapper = styled.div`
