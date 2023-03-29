@@ -5,9 +5,12 @@ import { arduinoLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import styled, { createGlobalStyle } from "styled-components";
 import Select from "react-select";
 import API from "../../API/API";
+import useCopyClipBoard from "../../hooks/useCopyClipBoard";
 import NavigationBar from "../UI/NavigationBar";
 import IndexBar from "../UI/IndexBar";
 import thumbnail_background from "../../assets/thumbnailBackgroundImage.png";
+import icon_clipboard from "../../assets/icon/icon_clipboard.svg";
+import icon_clipboard_complete from "../../assets/icon/icon_clipboard_complete.svg";
 
 function CardDetail() {
   const { postId } = useParams();
@@ -16,6 +19,13 @@ function CardDetail() {
   const [index, setIndex] = useState([]);
   const [lang, setLang] = useState("");
   const indexRef = useRef([]);
+  const [isCopy, onCopy] = useCopyClipBoard();
+  const [hover, setHover] = useState(false);
+  const [iconHover, setIconHover] = useState(false);
+
+  const handleCopyClipBoard = (text) => {
+    onCopy(text);
+  };
 
   const getData = async () => {
     try {
@@ -193,23 +203,53 @@ function CardDetail() {
             {p.code && (
               <CodeWrapper>
                 <Language />
-                <SyntaxHighlighter
-                  language={p.code[0].language.toLowerCase()}
-                  style={arduinoLight}
-                  customStyle={{
-                    background: "#EDF3F4",
-                    border: "1px solid #000000",
-                    borderRadius: "5px",
-                    width: "960px",
-                    height: "695px",
-                    padding: "1.1875rem",
-                    marginTop: "2rem",
-                    fontSize: "1.125rem",
-                    lineHeight: "1.625rem",
+                <CodeBox
+                  onMouseEnter={() => {
+                    const temp = true;
+                    setHover(temp);
+                  }}
+                  onMouseLeave={() => {
+                    const temp = false;
+                    setHover(temp);
                   }}
                 >
-                  {p.code[0].codeContent}
-                </SyntaxHighlighter>
+                  <ToolTipWrapper hover={iconHover} isCopy={isCopy}>
+                    <ToolTip>{isCopy ? "복사완료" : "클립보드에 복사"}</ToolTip>
+                  </ToolTipWrapper>
+                  <ClipboardIconWrapper
+                    hover={hover}
+                    onClick={() => handleCopyClipBoard(p.code[0].codeContent)}
+                    onMouseEnter={() => {
+                      const temp = true;
+                      setIconHover(temp);
+                    }}
+                    onMouseLeave={() => {
+                      const temp = false;
+                      setIconHover(temp);
+                    }}
+                  >
+                    <img
+                      src={isCopy ? icon_clipboard_complete : icon_clipboard}
+                    />
+                  </ClipboardIconWrapper>
+                  <SyntaxHighlighter
+                    language={p.code[0].language.toLowerCase()}
+                    style={arduinoLight}
+                    customStyle={{
+                      background: "#EDF3F4",
+                      border: "1px solid #000000",
+                      borderRadius: "5px",
+                      width: "920px",
+                      height: "695px",
+                      padding: "1.1875rem",
+                      marginTop: "2rem",
+                      fontSize: "1.125rem",
+                      lineHeight: "1.625rem",
+                    }}
+                  >
+                    {p.code[0].codeContent}
+                  </SyntaxHighlighter>
+                </CodeBox>
               </CodeWrapper>
             )}
           </ParagraphWrapper>
@@ -437,6 +477,52 @@ const Image = styled.img`
 
 const CodeWrapper = styled.div`
   margin-top: 3.5rem;
+`;
+
+const CodeBox = styled.div`
+  position: relative;
+`;
+
+const ClipboardIconWrapper = styled.div`
+  display: ${(props) => !props.hover && "none"};
+  position: absolute;
+  top: 1.1875rem;
+  right: 1.1875rem;
+  z-index: 100;
+  cursor: pointer;
+`;
+
+const ToolTipWrapper = styled.div`
+  display: ${(props) => !props.hover && "none"};
+  position: absolute;
+  top: -1.125rem;
+  right: ${(props) => (props.isCopy ? "-0.5rem" : "-2.08rem")};
+`;
+
+const ToolTip = styled.div`
+  position: relative;
+  background: #929292;
+  width: fit-content;
+  text-align: center;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  color: #ffffff;
+  padding: 0.125rem 0.6875rem;
+  border-radius: 4px;
+  &:after {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-top-color: #929292;
+    border-width: 5px;
+    margin-left: -5px;
+  }
 `;
 
 export default CardDetail;
