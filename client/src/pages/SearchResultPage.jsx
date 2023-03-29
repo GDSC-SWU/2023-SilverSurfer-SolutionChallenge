@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,32 +27,37 @@ function SearchResultPage() {
   const searchParams = useLocation().search;
   const query = qs.parse(searchParams).query;
   const [results, setResults] = useState([]);
+  const [scrap, setScrap] = useState([]);
   const [keywords, setKeywords] = useState([]); // 자동완성 결과
-  const [itemIndex, setItemIndex] = useState({});
   const input = useRef(""); // 입력값
   const ACCESS_TOKEN = useToken();
   const queryClient = useQueryClient();
+  const authState = useSelector((state) => state);
 
   useEffect(() => {
     getResult();
+    getScrap();
   }, []);
 
   const handleBookmark = (postId) => async () => {
-    setItemIndex((prev) => ({
-      ...prev,
-      [postId]: !prev[postId],
-    }));
-    await API.post(
-      `/content/scrap/${postId}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${ACCESS_TOKEN}`,
-        },
-      }
-    );
+    const current = new Date().getTime();
+    if (!authState.userName) {
+      alert("북마크를 저장하기 위해서는 로그인이 필요합니다.");
+    } else if (current >= authState.expireTime) {
+      alert("로그아웃 되었습니다. 다시 로그인 해주세요.");
+    } else {
+      await API.post(
+        `/content/scrap/${postId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
+          },
+        }
+      );
 
-    queryClient.invalidateQueries(["mypageScrap"]);
+      queryClient.invalidateQueries(["mypageScrap"]);
+    }
   };
 
   const onInputChange = (e) => {
@@ -69,6 +75,7 @@ function SearchResultPage() {
   const onSearch = () => {
     // 검색 버튼 클릭 or 엔터
     navigate(`/search?query=${input.current}`);
+    window.location.reload();
   };
 
   const handleOnKeyDown = (e) => {
@@ -103,6 +110,26 @@ function SearchResultPage() {
       }).then((res) => {
         const result = res.data.data === null ? [] : res.data.data;
         setKeywords(result);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getScrap = async () => {
+    const current = new Date().getTime();
+    if (!authState.userName || current >= authState.expireTime) return;
+    try {
+      await API.get("/mypage/scrap", {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }).then((res) => {
+        const result = [];
+        res.data.data.map((item) => {
+          result.push(item.postId);
+        });
+        setScrap(result);
       });
     } catch (error) {
       console.error(error);
@@ -177,14 +204,14 @@ function SearchResultPage() {
           </Result>
         </TitleWrapper>
         <CardBoxWrapper>
-          {results?.map((it, i) => (
+          {results?.map((it) => (
             <Fragment key={it.postId}>
-              <CardWrapper onClick={() => onClick(it.postId)}>
-                <CardImageBox>
+              <CardWrapper>
+                <CardImageBox onClick={() => onClick(it.postId)}>
                   <CardImage src={it.thumbnailImagePath} />
                 </CardImageBox>
                 <CardTextBox>
-                  {itemIndex[i] ? (
+                  {!scrap?.includes(it.postId) ? (
                     <InActiveBookmarkIcon src={inActiveBookmark} />
                   ) : (
                     <BookmarkIcon
@@ -192,7 +219,7 @@ function SearchResultPage() {
                       onClick={handleBookmark(it.postId)}
                     />
                   )}
-                  <Title>{it.title}</Title>
+                  <Title onClick={() => onClick(it.postId)}>{it.title}</Title>
                   <SubTitle>{it.explanation}</SubTitle>
                 </CardTextBox>
               </CardWrapper>
