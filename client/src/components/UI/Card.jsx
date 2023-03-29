@@ -10,9 +10,11 @@ export const CardWrapper = styled.div`
   flex-direction: column;
   margin-top: 2rem;
   margin-right: 1rem;
+  cursor: pointer;
 `;
 
 export const CardImageBox = styled.div`
+  position: relative;
   width: 23rem;
   height: 12.5rem;
   border-radius: 1.75rem 1.75rem 0 0;
@@ -21,7 +23,13 @@ export const CardImageBox = styled.div`
 `;
 
 export const CardImage = styled.img`
+  position: absolute;
   width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  border-radius: 1.75rem 1.75rem 0 0;
 `;
 
 export const CardTextBox = styled.div`
