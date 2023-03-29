@@ -1,13 +1,30 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import API from "../../API/API";
 import searchIcon from "../../assets/icon/icon_search.svg";
 
-function Search() {
+function Search({ onSearchClose }) {
   const navigation = useNavigate();
   const [keywords, setKeywords] = useState([]); // 자동완성 결과
   const input = useRef(""); // 입력값
+  const searchRef = useRef(null);
+
+  function handleClickOutside(e) {
+    console.log(searchRef.current);
+    if (searchRef.current && !searchRef.current.contains(e.target)) {
+      onSearchClose();
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchRef]);
+
   const getKeyword = async (search) => {
     try {
       await API.get("/search/auto", {
@@ -67,7 +84,7 @@ function Search() {
     <div>
       <Wrapper>
         <ModalBackground>
-          <ModalWrapper>
+          <ModalWrapper ref={searchRef}>
             <form>
               <InputWrapper>
                 <InputText
@@ -159,6 +176,7 @@ const InputText = styled.input`
 const SearchButton = styled.img`
   margin-bottom: 0.8125rem;
   margin-left: -3rem;
+  cursor: pointer;
 `;
 
 const AutoKeywordContainer = styled.div`
