@@ -24,11 +24,13 @@ function StyleGuide() {
   const navigate = useNavigate();
 
   const authState = useSelector((state) => state);
-  const cardData = !authState.userName
-    ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/스타일`).data
-    : useLoginCardData(
-        `${process.env.REACT_APP_API_BASE_URL}/content/us/스타일`
-      ).data;
+  const current = new Date().getTime();
+  const cardData =
+    !authState.userName || current >= authState.expireTime
+      ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/스타일`).data
+      : useLoginCardData(
+          `${process.env.REACT_APP_API_BASE_URL}/content/us/스타일`
+        ).data;
 
   const handleBookmark = (index, postId) => async () => {
     setItemIndex((prev) => ({
@@ -36,15 +38,22 @@ function StyleGuide() {
       [index]: !prev[index],
     }));
 
-    await API.post(
-      `/content/scrap/${postId}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${ACCESS_TOKEN}`,
-        },
-      }
-    );
+    const current = new Date().getTime();
+    if (!authState.userName) {
+      alert("북마크를 저장하기 위해서는 로그인이 필요합니다.");
+    } else if (current >= authState.expireTime) {
+      alert("로그아웃 되었습니다. 다시 로그인 해주세요.");
+    } else {
+      await API.post(
+        `/content/scrap/${postId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
+          },
+        }
+      );
+    }
   };
 
   const onClick = (postId) => {
@@ -57,8 +66,8 @@ function StyleGuide() {
       {cardData?.map((it, i) => (
         // <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
         <Fragment key={it.postId}>
-          <CardWrapper onClick={() => onClick(it.postId)}>
-            <CardImageBox>
+          <CardWrapper>
+            <CardImageBox onClick={() => onClick(it.postId)}>
               <CardImage src={it.thumbnailImagePath} />
             </CardImageBox>
             <CardTextBox>
@@ -73,7 +82,7 @@ function StyleGuide() {
                   onClick={handleBookmark(i, it.postId)}
                 />
               )}
-              <Title>{it.title}</Title>
+              <Title onClick={() => onClick(it.postId)}>{it.title}</Title>
               <SubTitle>{it.explanation}</SubTitle>
             </CardTextBox>
           </CardWrapper>

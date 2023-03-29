@@ -3,7 +3,8 @@ import setUserInfo from "../store/setUserInfo";
 
 const setUserData = (dispatch, res) => {
   const accessToken = res.data.data.accessToken;
-  setUserInfo(dispatch, "user", accessToken); // redux setting
+  const expireTime = new Date().getTime() + 60 * 1000 * 60;
+  setUserInfo(dispatch, "user", accessToken, expireTime); // redux setting
 };
 
 export const postLogin = async (dispatch, credential) => {

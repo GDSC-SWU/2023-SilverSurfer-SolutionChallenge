@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import API from "../API/API";
@@ -27,6 +27,7 @@ function MyPage() {
   const navigate = useNavigate();
   const ACCESS_TOKEN = useToken();
   const queryClient = useQueryClient();
+  const authState = useSelector((state) => state);
 
   const postLogout = async () => {
     try {
@@ -34,13 +35,23 @@ function MyPage() {
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
-      }).then(() => setUserInfo(dispatch));
+      }).then(() => {
+        setUserInfo(dispatch);
+        alert("로그아웃 되었습니다.");
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
   const getUserData = async (url) => {
+    const current = new Date().getTime();
+    if (current >= authState.expireTime) {
+      setUserInfo(dispatch);
+      alert("로그아웃 되었습니다. 다시 로그인 해주세요.");
+      window.location.replace("/login");
+    }
+
     const { data } = await API.get(url, {
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -124,8 +135,8 @@ function MyPage() {
             <CardBoxWrapper>
               {mypageScrap?.data?.map((it, i) => (
                 <Fragment key={it.postId}>
-                  <CardWrapper onClick={() => onClick(it.postId)}>
-                    <CardImageBox>
+                  <CardWrapper>
+                    <CardImageBox onClick={() => onClick(it.postId)}>
                       <CardImage src={it.thumbnailImagePath} />
                     </CardImageBox>
                     <CardTextBox>
@@ -137,7 +148,9 @@ function MyPage() {
                           onClick={handleBookmark(it.postId)}
                         />
                       )}
-                      <Title>{it.title}</Title>
+                      <Title onClick={() => onClick(it.postId)}>
+                        {it.title}
+                      </Title>
                       <SubTitle>{it.explanation}</SubTitle>
                     </CardTextBox>
                   </CardWrapper>

@@ -2,6 +2,7 @@
 const initialState = {
   userName: null,
   accessToken: null,
+  expireTime: null,
 };
 
 // Reducer
@@ -12,12 +13,14 @@ const userReducer = (state = initialState, action) => {
         ...state, // 액션과 상관 없는 state 값 보존
         userName: action.userName,
         accessToken: action.accessToken,
+        expireTime: action.expireTime,
       };
     case "SIGNOUT":
       return {
         ...state,
         userName: null,
         accessToken: null,
+        expireTime: null,
       };
     default:
       return state;
