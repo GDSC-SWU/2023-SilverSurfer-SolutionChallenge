@@ -55,13 +55,14 @@ const PostFormButton = styled.button`
   color: #fff;
   margin-top: 1rem;
   margin-bottom: 14rem;
+  cursor: pointer;
 `;
 
 const InputBox = styled.input`
   width: 35.75rem;
   height: 3.375rem;
   font-size: 1rem;
-  color: ${(props) => props.theme.colors.text_gray2};
+  color: #000000;
   box-sizing: border-box;
   padding: 1rem 1.5rem;
   border: 1px solid #878787;
