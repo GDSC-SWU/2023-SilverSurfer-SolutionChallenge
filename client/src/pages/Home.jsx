@@ -16,69 +16,71 @@ const HomePage = () => {
         <MainBannerImage src={bannerImage} />
       </BannerWrapper>
 
-      <Wrapper id="core">
-        <GuidelineWrapper>
-          <MainTitle>핵심 지침</MainTitle>
-          <SubTitle>
-            장노년층 사용자를 고려하기 위한 3가지 핵심 가이드라인
-          </SubTitle>
-          <Guideline />
-          <Guideline />
-          <Guideline />
-        </GuidelineWrapper>
-      </Wrapper>
-      <Wrapper id="ux">
-        <TitleWrapper>
-          <MainTitle>UX 가이드라인</MainTitle>
-          <SubTitle>
-            장노년층 사용자를 고려하기 위한 5가지 UX 가이드라인
-          </SubTitle>
-        </TitleWrapper>
-      </Wrapper>
+      <Container>
+        <Wrapper id="core">
+          <GuidelineWrapper>
+            <MainTitle>핵심 지침</MainTitle>
+            <SubTitle>
+              장노년층 사용자를 고려하기 위한 3가지 핵심 가이드라인
+            </SubTitle>
+            <Guideline />
+            <Guideline />
+            <Guideline />
+          </GuidelineWrapper>
+        </Wrapper>
+        <Wrapper id="ux">
+          <TitleWrapper>
+            <MainTitle>UX 가이드라인</MainTitle>
+            <SubTitle>
+              장노년층 사용자를 고려하기 위한 5가지 UX 가이드라인
+            </SubTitle>
+          </TitleWrapper>
+        </Wrapper>
 
-      <Wrapper>
-        <CardBoxWrapper>
-          <UxGuide />
-        </CardBoxWrapper>
-      </Wrapper>
+        <Wrapper>
+          <CardBoxWrapper>
+            <UxGuide />
+          </CardBoxWrapper>
+        </Wrapper>
 
-      <Wrapper id="component">
-        <TitleWrapper>
-          <MainTitle>컴포넌트</MainTitle>
-          <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
-        </TitleWrapper>
-      </Wrapper>
+        <Wrapper id="component">
+          <TitleWrapper>
+            <MainTitle>컴포넌트</MainTitle>
+            <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
+          </TitleWrapper>
+        </Wrapper>
 
-      <Wrapper>
-        <CardBoxWrapper>
-          <ComponentGuide />
-        </CardBoxWrapper>
-      </Wrapper>
-      
-      <Wrapper id="style">
-        <TitleWrapper>
-          <MainTitle>스타일</MainTitle>
-          <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
-        </TitleWrapper>
-      </Wrapper>
+        <Wrapper>
+          <CardBoxWrapper>
+            <ComponentGuide />
+          </CardBoxWrapper>
+        </Wrapper>
 
-      <Wrapper>
-        <CardBoxWrapper>
-          <StyleGuide />
-        </CardBoxWrapper>
-      </Wrapper>
+        <Wrapper id="style">
+          <TitleWrapper>
+            <MainTitle>스타일</MainTitle>
+            <SubTitle>장노년층 사용자를 고려하기 위한 UI 가이드라인</SubTitle>
+          </TitleWrapper>
+        </Wrapper>
 
-      <Wrapper id="contribute">
-        <TitleWrapper>
-          <MainTitle>의견 제출</MainTitle>
-          <SubTitle>
-            사용해보시고, 개선점이 있을 경우 해당 폼을 작성해주세요. <br /> 더욱
-            좋은 접근성을 제공하는데 있어 큰 도움이 됩니다.{" "}
-          </SubTitle>
-        </TitleWrapper>
-      </Wrapper>
+        <Wrapper>
+          <CardBoxWrapper>
+            <StyleGuide />
+          </CardBoxWrapper>
+        </Wrapper>
 
-      <FeedBackForm />
+        <Wrapper id="contribute">
+          <TitleWrapper>
+            <MainTitle>의견 제출</MainTitle>
+            <SubTitle>
+              사용해보시고, 개선점이 있을 경우 해당 폼을 작성해주세요. <br />{" "}
+              더욱 좋은 접근성을 제공하는데 있어 큰 도움이 됩니다.{" "}
+            </SubTitle>
+          </TitleWrapper>
+        </Wrapper>
+
+        <FeedBackForm />
+      </Container>
     </>
   );
 };
@@ -122,6 +124,10 @@ const MainBannerImage = styled.img`
   display: block;
   margin-left: 7.25rem;
   padding: 1rem;
+`;
+
+const Container = styled.div`
+  margin-left: 8.25rem;
 `;
 
 const MainTitle = styled.h2`
