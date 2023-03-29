@@ -13,7 +13,7 @@ import {
 } from "../UI/Card";
 import bookmark from "../../assets/icon/icon_bookmark_active.svg";
 import inActiveBookmark from "../../assets/icon/icon_bookmark_inactive.svg";
-// import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLoginCardData from "../../hooks/useLoginCardData";
 import API from "../../API/API";
 import useToken from "../../hooks/useToken";
@@ -21,6 +21,7 @@ import useToken from "../../hooks/useToken";
 function UxGuide() {
   const ACCESS_TOKEN = useToken();
   const [itemIndex, setItemIndex] = useState({});
+  const navigate = useNavigate();
 
   const authState = useSelector((state) => state);
   const cardData = !authState.userName
@@ -46,14 +47,19 @@ function UxGuide() {
     );
   };
 
+  const onClick = (postId) => {
+    navigate(`/content/${postId}`);
+    location.reload();
+  };
+
   return (
     <>
       {cardData?.data?.map((it, i) => (
         // <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
         <Fragment key={it.postId}>
-          <CardWrapper>
+          <CardWrapper onClick={() => onClick(it.postId)}>
             <CardImageBox>
-              <CardImage src={it.thumbnailPath} />
+              <CardImage src={it.thumbnailImagePath} />
             </CardImageBox>
             <CardTextBox>
               {it.bookmark || itemIndex[i] ? (

@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import useCardData from "../../hooks/useCardData";
+import useLoginCardData from "../../hooks/useLoginCardData";
 import {
   CardWrapper,
   CardImage,
@@ -13,21 +14,21 @@ import {
 } from "../UI/Card";
 import bookmark from "../../assets/icon/icon_bookmark_active.svg";
 import inActiveBookmark from "../../assets/icon/icon_bookmark_inactive.svg";
-// import { Link } from "react-router-dom";
-import useLoginCardData from "../../hooks/useLoginCardData";
+import { useNavigate } from "react-router-dom";
 import API from "../../API/API";
 import useToken from "../../hooks/useToken";
 
 function StyleGuide() {
   const ACCESS_TOKEN = useToken();
   const [itemIndex, setItemIndex] = useState({});
+  const navigate = useNavigate();
 
   const authState = useSelector((state) => state);
   const cardData = !authState.userName
-    ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/스타일`)
+    ? useCardData(`${process.env.REACT_APP_API_BASE_URL}/content/스타일`).data
     : useLoginCardData(
         `${process.env.REACT_APP_API_BASE_URL}/content/us/스타일`
-      );
+      ).data;
 
   const handleBookmark = (index, postId) => async () => {
     setItemIndex((prev) => ({
@@ -46,14 +47,19 @@ function StyleGuide() {
     );
   };
 
+  const onClick = (postId) => {
+    navigate(`/content/${postId}`);
+    location.reload();
+  };
+
   return (
     <>
-      {cardData?.data?.map((it, i) => (
+      {cardData?.map((it, i) => (
         // <Link to={`content/${it.postId}`} state={it.postId} key={it.postId}>
         <Fragment key={it.postId}>
-          <CardWrapper>
+          <CardWrapper onClick={() => onClick(it.postId)}>
             <CardImageBox>
-              <CardImage src={it.thumbnailPath} />
+              <CardImage src={it.thumbnailImagePath} />
             </CardImageBox>
             <CardTextBox>
               {it.bookmark || itemIndex[i] ? (
