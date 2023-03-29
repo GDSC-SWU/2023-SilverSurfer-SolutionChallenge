@@ -133,7 +133,7 @@ const Container = styled.div`
 const MainTitle = styled.h2`
   color: ${(props) => props.theme.colors.text_gray1};
   font-size: 3.125rem;
-  font-weight: 400;
+  font-weight: 600;
   margin: 10rem 0 0 0;
 `;
 
