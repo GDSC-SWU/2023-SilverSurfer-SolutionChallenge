@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { useSelector } from "react-redux";
 import icon_main from "../../assets/icon/icon_menu_main.svg";
@@ -13,9 +13,13 @@ import icon_communication from "../../assets/icon/icon_menu_communication.svg";
 import icon_my from "../../assets/icon/icon_menu_my.svg";
 import icon_search from "../../assets/icon/icon_menu_search.svg";
 
-export default function Menu() {
+export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
   const authState = useSelector((state) => state);
   const navigate = useNavigate();
+
+  const onMainClick = () => {
+    window.location.replace("/");
+  };
 
   const onMypageClick = () => {
     let link = `/mypage`;
@@ -29,49 +33,82 @@ export default function Menu() {
   return (
     <NavWrapper>
       <MenuWrapper>
-        <MenuContentBox to={"/"}>
-          <MenuIcon src={icon_main} />
-          <MenuText>메인</MenuText>
+        <MenuContentBox onClick={onMainClick}>
+          <HoverBox>
+            <MenuIcon src={icon_main} />
+            <MenuText>메인</MenuText>
+          </HoverBox>
         </MenuContentBox>
 
-        <MenuContentBox smooth to={"/#core"}>
-          <MenuIcon src={icon_key} />
-          <MenuText>핵심 지침</MenuText>
-        </MenuContentBox>
+        <MenuContentLink smooth to={"/#core"}>
+          <HoverBox>
+            <MenuIcon src={icon_key} />
+            <MenuText>핵심 지침</MenuText>
+          </HoverBox>
+        </MenuContentLink>
 
-        <MenuContentBox smooth to={"/#ux"}>
-          <MenuIcon src={icon_ux} />
-          <MenuText>UX 가이드</MenuText>
-        </MenuContentBox>
+        <MenuContentLink
+          smooth
+          to={"/#ux"}
+          onMouseEnter={() => onMouseEnter("ux")}
+          onMouseLeave={onMouseLeave}
+        >
+          <HoverBox>
+            <MenuIcon src={icon_ux} />
+            <MenuText>UX 가이드</MenuText>
+          </HoverBox>
+        </MenuContentLink>
 
-        <MenuContentBox smooth to={"/#component"}>
-          <MenuIcon src={icon_component} />
-          <MenuText>컴포넌트</MenuText>
-        </MenuContentBox>
+        <MenuContentLink
+          smooth
+          to={"/#component"}
+          onMouseEnter={() => onMouseEnter("component")}
+          onMouseLeave={onMouseLeave}
+        >
+          <HoverBox>
+            <MenuIcon src={icon_component} />
+            <MenuText>컴포넌트</MenuText>
+          </HoverBox>
+        </MenuContentLink>
 
-        <MenuContentBox smooth to={"/#style"}>
-          <MenuIcon src={icon_style} />
-          <MenuText>스타일</MenuText>
-        </MenuContentBox>
+        <MenuContentLink
+          smooth
+          to={"/#style"}
+          onMouseEnter={() => onMouseEnter("style")}
+          onMouseLeave={onMouseLeave}
+        >
+          <HoverBox>
+            <MenuIcon src={icon_style} />
+            <MenuText>스타일</MenuText>
+          </HoverBox>
+        </MenuContentLink>
 
-        <MenuContentBox smooth to={"/#contribute"}>
-          <MenuIcon src={icon_communication} />
-          <MenuText>의견 제출</MenuText>
-        </MenuContentBox>
+        <MenuContentLink smooth to={"/#contribute"}>
+          <HoverBox>
+            <MenuIcon src={icon_communication} />
+            <MenuText>의견 제출</MenuText>
+          </HoverBox>
+        </MenuContentLink>
 
         <MenuContentBox>
-          <MenuIcon src={icon_project} />
-          <MenuText>프로젝트 소개</MenuText>
+          <HoverBox>
+            <MenuIcon src={icon_project} />
+            <MenuText>프로젝트 소개</MenuText>
+          </HoverBox>
         </MenuContentBox>
       </MenuWrapper>
 
       <SubMenuWrapper>
-        <MypageBox onClick={onMypageClick}>
-          <SubMenuIcon src={icon_my} />
-        </MypageBox>
+        <SubMenuContentBox onClick={onMypageClick}>
+          <HoverBox type={"sub"}>
+            <SubMenuIcon src={icon_my} />
+          </HoverBox>
+        </SubMenuContentBox>
 
-        <SubMenuContentBox>
-          <SubMenuIcon src={icon_search} />
+        <SubMenuContentBox onClick={onSearchClick}>
+          <HoverBox type={"sub"}>
+            <SubMenuIcon src={icon_search} />
+          </HoverBox>
         </SubMenuContentBox>
       </SubMenuWrapper>
     </NavWrapper>
@@ -91,14 +128,39 @@ const MenuWrapper = styled.div`
   margin-top: 1.5rem;
 `;
 
-const MenuContentBox = styled(HashLink)`
-  width: 100%;
+const MenuContentLink = styled(HashLink)`
   height: 5.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+`;
+
+const MenuContentBox = styled.div`
+  height: 5.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+`;
+
+const HoverBox = styled.div`
+  height: ${(props) => (props.type === "sub" ? "3.75rem" : "5.4rem")};
+  width: ${(props) => (props.type === "sub" ? "3.75rem" : "100%")};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${(props) => (props.type === "sub" ? "50%" : "20px")};
+  &:hover {
+    background: rgba(25, 181, 216, 0.2);
+  }
 `;
 
 const MenuIcon = styled.img`
@@ -122,7 +184,7 @@ const SubMenuWrapper = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-const MypageBox = styled.div`
+const SubMenuContentBox = styled.div`
   width: 5rem;
   height: 5rem;
   display: flex;
@@ -132,15 +194,15 @@ const MypageBox = styled.div`
   cursor: pointer;
 `;
 
-const SubMenuContentBox = styled(Link)`
-  width: 5rem;
-  height: 5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
+// const SubMenuContentLink = styled(Link)`
+//   width: 5rem;
+//   height: 5rem;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+// `;
 
 const SubMenuIcon = styled.img`
   width: 3.75rem;
