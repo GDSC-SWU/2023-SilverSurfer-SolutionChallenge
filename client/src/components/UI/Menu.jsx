@@ -174,6 +174,7 @@ const MenuText = styled.p`
   color: ${(props) => props.theme.colors.text_gray1};
   display: block;
   margin: 0.5rem 0 0 0;
+  word-break: keep-all;
 `;
 
 const SubMenuWrapper = styled.div`
