@@ -18,7 +18,10 @@ export const postLogin = async (dispatch, credential) => {
           "Content-Type": "application/json",
         },
       }
-    ).then((res) => setUserData(dispatch, res));
+    ).then((res) => {
+      setUserData(dispatch, res);
+      window.location.replace("/");
+    });
   } catch (err) {
     console.error("server error");
   }
