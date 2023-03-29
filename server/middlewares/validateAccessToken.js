@@ -6,7 +6,15 @@ dotenv.config();
 let userId = "";
 
 function validateAccessToken(req, res, next) {
+  if (!req.get("Authorization")) {
+    return res.status(401).json({
+      status: "Error",
+      message: "Token Required.",
+    });
+  }
+
   const token = req.get("Authorization").split("Bearer ")[1];
+
   // accessToken 검사 (redis 내 존재 여부)
   try {
     jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
