@@ -80,6 +80,7 @@ function SearchResultPage() {
 
   const handleOnKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       onSearch();
     }
   };
@@ -212,7 +213,10 @@ function SearchResultPage() {
                 </CardImageBox>
                 <CardTextBox>
                   {!scrap?.includes(it.postId) ? (
-                    <InActiveBookmarkIcon src={inActiveBookmark} />
+                    <InActiveBookmarkIcon
+                      src={inActiveBookmark}
+                      onClick={handleBookmark(it.postId)}
+                    />
                   ) : (
                     <BookmarkIcon
                       src={bookmark}

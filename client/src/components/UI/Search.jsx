@@ -11,7 +11,6 @@ function Search({ onSearchClose }) {
   const searchRef = useRef(null);
 
   function handleClickOutside(e) {
-    console.log(searchRef.current);
     if (searchRef.current && !searchRef.current.contains(e.target)) {
       onSearchClose();
     }
@@ -55,10 +54,12 @@ function Search({ onSearchClose }) {
   const onSearch = () => {
     // 검색 버튼 클릭 or 엔터
     navigation(`/search?query=${input.current}`);
+    window.location.reload();
   };
 
   const handleOnKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       onSearch();
     }
   };
