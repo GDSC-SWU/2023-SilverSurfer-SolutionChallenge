@@ -22,7 +22,7 @@ export const postLogin = async (dispatch, credential) => {
       }
     ).then((res) => {
       setUserData(dispatch, res);
-      window.location.replace("/");
+      window.location.href = "/";
     });
   } catch (err) {
     console.error("server error");
