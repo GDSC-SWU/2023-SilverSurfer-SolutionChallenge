@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import API from "../../API/API";
 import searchIcon from "../../assets/icon/icon_search.svg";
+import setRecentSearch from "../../store/setRecentSearch";
 
 function Search({ onSearchClose }) {
   const navigation = useNavigate();
   const [keywords, setKeywords] = useState([]); // 자동완성 결과
+  const [recentData, setRecentData] = useState([]);
   const input = useRef(""); // 입력값
   const searchRef = useRef(null);
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   function handleClickOutside(e) {
     if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -23,6 +28,18 @@ function Search({ onSearchClose }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchRef]);
+
+  useEffect(() => {
+    if (state.recentSearch.length === 0) return;
+    if (state.recentSearch.length === recentData.length) return;
+
+    const result = [...recentData];
+    state.recentSearch.map((item) => {
+      result.push(item);
+    });
+
+    setRecentData(result);
+  }, [state]);
 
   const getKeyword = async (search) => {
     try {
@@ -51,8 +68,11 @@ function Search({ onSearchClose }) {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (isRecent) => {
     // 검색 버튼 클릭 or 엔터
+    if (!isRecent) {
+      setRecentSearch(dispatch, true, input.current);
+    }
     navigation(`/search?query=${input.current}`);
     window.location.reload();
   };
@@ -60,8 +80,14 @@ function Search({ onSearchClose }) {
   const handleOnKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      onSearch();
+      onSearch(false);
     }
+  };
+
+  const handleLeftClick = (e, id) => {
+    e.preventDefault();
+    setRecentData(recentData.filter((item) => item.id !== id));
+    setRecentSearch(dispatch, false, id);
   };
 
   const matchInput = (word) => {
@@ -100,7 +126,7 @@ function Search({ onSearchClose }) {
                   id="searchBtn"
                   type="button"
                   style={{ display: "none" }}
-                  onClick={() => onSearch()}
+                  onClick={() => onSearch(false)}
                 />
               </InputWrapper>
             </form>
@@ -111,7 +137,7 @@ function Search({ onSearchClose }) {
                     key={idx}
                     onClick={() => {
                       input.current = word;
-                      onSearch();
+                      onSearch(false);
                     }}
                   >
                     {matchInput(word)}
@@ -121,8 +147,21 @@ function Search({ onSearchClose }) {
             )}
             <Title>최근 검색어</Title>
             <ItemWrapper>
-              <Item>버튼</Item>
-              <Item>레이아웃</Item>
+              {recentData.length !== 0 &&
+                recentData.map((item) => {
+                  return (
+                    <Item
+                      key={item.id}
+                      onClick={() => {
+                        input.current = item.value;
+                        onSearch(true);
+                      }}
+                      onContextMenu={(e) => handleLeftClick(e, item.id)}
+                    >
+                      {item.value}
+                    </Item>
+                  );
+                })}
             </ItemWrapper>
           </ModalWrapper>
         </ModalBackground>
@@ -218,14 +257,22 @@ const ItemWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
+  width: 38.75rem;
+  height: 2.5rem;
+  overflow: hidden;
 `;
 
 const Item = styled.div`
   font-size: 1rem;
   padding: 0.5rem;
+  max-width: 7.75rem;
   border: 1px solid #878787;
   border-radius: 0.25rem;
   margin-right: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export default Search;

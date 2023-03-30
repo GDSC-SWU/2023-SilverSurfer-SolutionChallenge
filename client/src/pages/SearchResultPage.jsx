@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef, Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import NavigationBar from "../components/UI/NavigationBar";
 import { useQueryClient } from "@tanstack/react-query";
 import useToken from "../hooks/useToken";
+import setRecentSearch from "../store/setRecentSearch";
 // import Card from "../components/Card/UxGuide";
 import qs from "query-string";
 import API from "../API/API";
@@ -33,6 +34,7 @@ function SearchResultPage() {
   const ACCESS_TOKEN = useToken();
   const queryClient = useQueryClient();
   const authState = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getResult();
@@ -74,6 +76,7 @@ function SearchResultPage() {
 
   const onSearch = () => {
     // 검색 버튼 클릭 or 엔터
+    setRecentSearch(dispatch, true, input.current);
     navigate(`/search?query=${input.current}`);
     window.location.reload();
   };

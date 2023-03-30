@@ -4,6 +4,7 @@ const initialState = {
   accessToken: null,
   expireTime: null,
   profileImage: null,
+  recentSearch: [],
 };
 
 // Reducer
@@ -24,6 +25,25 @@ const userReducer = (state = initialState, action) => {
         accessToken: null,
         expireTime: null,
         profileImage: null,
+        recentSearch: [],
+      };
+    case "SEARCH":
+      return {
+        ...state,
+        recentSearch: [
+          ...state.recentSearch,
+          {
+            id: action.id,
+            value: action.value,
+          },
+        ],
+      };
+    case "DELETE_SEARCH":
+      return {
+        ...state,
+        recentSearch: state.recentSearch.filter(
+          (item) => item.id !== action.id
+        ),
       };
     default:
       return state;
