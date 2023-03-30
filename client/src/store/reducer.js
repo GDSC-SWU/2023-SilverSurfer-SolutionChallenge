@@ -3,6 +3,7 @@ const initialState = {
   userName: null,
   accessToken: null,
   expireTime: null,
+  profileImage: null,
 };
 
 // Reducer
@@ -14,6 +15,7 @@ const userReducer = (state = initialState, action) => {
         userName: action.userName,
         accessToken: action.accessToken,
         expireTime: action.expireTime,
+        profileImage: action.profileImage,
       };
     case "SIGNOUT":
       return {
@@ -21,6 +23,7 @@ const userReducer = (state = initialState, action) => {
         userName: null,
         accessToken: null,
         expireTime: null,
+        profileImage: null,
       };
     default:
       return state;
