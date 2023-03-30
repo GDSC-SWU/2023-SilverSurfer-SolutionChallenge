@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import API from "../../API/API";
 import searchIcon from "../../assets/icon/icon_search.svg";
 import setRecentSearch from "../../store/setRecentSearch";
+import icon_delete from "../../assets/icon/icon_delete_button.svg";
 
 function Search({ onSearchClose }) {
   const navigation = useNavigate();
@@ -84,8 +85,7 @@ function Search({ onSearchClose }) {
     }
   };
 
-  const handleLeftClick = (e, id) => {
-    e.preventDefault();
+  const handleDeleteClick = (id) => {
     setRecentData(recentData.filter((item) => item.id !== id));
     setRecentSearch(dispatch, false, id);
   };
@@ -146,23 +146,27 @@ function Search({ onSearchClose }) {
               </AutoKeywordContainer>
             )}
             <Title>최근 검색어</Title>
-            <ItemWrapper>
+            <ItemBox>
               {recentData.length !== 0 &&
                 recentData.map((item) => {
                   return (
-                    <Item
-                      key={item.id}
-                      onClick={() => {
-                        input.current = item.value;
-                        onSearch(true);
-                      }}
-                      onContextMenu={(e) => handleLeftClick(e, item.id)}
-                    >
-                      {item.value}
-                    </Item>
+                    <ItemWrapper key={item.id}>
+                      <Item
+                        onClick={() => {
+                          input.current = item.value;
+                          onSearch(true);
+                        }}
+                      >
+                        {item.value}
+                      </Item>
+                      <ItemDelete
+                        src={icon_delete}
+                        onClick={() => handleDeleteClick(item.id)}
+                      />
+                    </ItemWrapper>
                   );
                 })}
-            </ItemWrapper>
+            </ItemBox>
           </ModalWrapper>
         </ModalBackground>
       </Wrapper>
@@ -252,27 +256,36 @@ const Title = styled.h4`
   margin-bottom: 1rem;
 `;
 
-const ItemWrapper = styled.div`
+const ItemBox = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
   width: 38.75rem;
-  height: 2.5rem;
+  height: 4rem;
   overflow: hidden;
+`;
+
+const ItemWrapper = styled.div`
+  display: flex;
+  padding: 0.75rem;
+  margin-right: 0.75rem;
+  border: 1px solid #878787;
+  border-radius: 0.25rem;
 `;
 
 const Item = styled.div`
   font-size: 1rem;
-  padding: 0.5rem;
-  max-width: 7.75rem;
-  border: 1px solid #878787;
-  border-radius: 0.25rem;
   margin-right: 0.75rem;
   cursor: pointer;
+  max-width: 7.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ItemDelete = styled.img`
+  cursor: pointer;
 `;
 
 export default Search;
