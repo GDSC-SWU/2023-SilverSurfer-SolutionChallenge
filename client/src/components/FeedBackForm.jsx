@@ -48,14 +48,18 @@ const FormWrapper = styled(Wrapper)`
 const PostFormButton = styled.button`
   width: 72.7rem;
   height: 4rem;
-  background-color: #d0d0d0;
+  background-color: #daf5fb;
   border: none;
   border-radius: 0.5rem;
   font-size: 1.5rem;
-  color: #fff;
+  color: #a7a7a7;
   margin-top: 1rem;
   margin-bottom: 14rem;
   cursor: pointer;
+  &:hover {
+    background-color: skyblue;
+    color: #ffffff;
+  }
 `;
 
 const InputBox = styled.input`
