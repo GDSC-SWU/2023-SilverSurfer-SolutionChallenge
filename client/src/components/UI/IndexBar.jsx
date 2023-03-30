@@ -76,6 +76,7 @@ const IndexBarWrapper = styled.div`
   flex-direction: column;
   top: ${(props) => props.isFixed && 0};
   right: 2.75rem;
+  z-index: 1000;
 `;
 
 const IndexTitle = styled.h5`
