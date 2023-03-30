@@ -97,6 +97,7 @@ router.post("/login", async (req, res) => {
       message: "Signed In Successfully.",
       data: {
         userId: userId,
+        googleProfileImagePath: profileImage,
         accessToken: token,
       },
     });
