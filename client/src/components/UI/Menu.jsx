@@ -36,9 +36,6 @@ export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
     if (profileImagePath) {
       setProfile(profileImagePath);
     }
-
-    console.log(profileImagePath);
-    console.log(profile);
   });
 
   return (
