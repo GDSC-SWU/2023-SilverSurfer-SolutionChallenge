@@ -21,8 +21,8 @@ function Guideline() {
 
 const Wrapper = styled.div`
   display: flex;
-  width: 73.75rem;
   margin-top: 3.375rem;
+  width: 73.25rem;
 `;
 
 const GuideImage = styled.img`

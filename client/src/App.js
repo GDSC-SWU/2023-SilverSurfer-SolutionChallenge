@@ -4,6 +4,8 @@ import HomePage from "./pages/Home";
 import GuidePage from "./pages/Guide";
 import MyPage from "./pages/MyPage";
 import CardDetail from "./components/Card/CardDetail";
+import SearchResult from "./pages/SearchResultPage";
+import "./App.css";
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/content/:postId" element={<CardDetail />} />
       <Route path="/mypage" element={<MyPage />} />
+      <Route path="/search/*" element={<SearchResult />} />
     </Routes>
   );
 }

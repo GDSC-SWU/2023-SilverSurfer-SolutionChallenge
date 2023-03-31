@@ -29,8 +29,7 @@ router.get("/", async (req, res) => {
             where   category like "%${search}%" or 
                     title like "%${search}%" or
                     title_eng like "%${search}%" or
-                    explanation like "%${search}%" or
-                    content like "%${search}%"`;
+                    explanation like "%${search}%"`;
       [result] = await conn.query(query);
     }
 
@@ -41,9 +40,9 @@ router.get("/", async (req, res) => {
         const [imageRows] = await conn.query(query);
 
         if (imageRows[0]) {
-          result[i].thumbnailPath = imageRows[0].imagePath;
+          result[i].thumbnailImagePath = imageRows[0].imagePath;
         } else {
-          result[i].thumbnailPath = null;
+          result[i].thumbnailImagePath = null;
         }
       }
     } else {
