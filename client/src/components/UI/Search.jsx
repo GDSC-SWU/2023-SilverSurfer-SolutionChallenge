@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import API from "../../API/API";
+import useIsOverflow from "../../hooks/useIsOverflow";
 import searchIcon from "../../assets/icon/icon_search.svg";
 import setRecentSearch from "../../store/setRecentSearch";
 import icon_delete from "../../assets/icon/icon_delete_button.svg";
@@ -15,6 +16,8 @@ function Search({ onSearchClose }) {
   const searchRef = useRef(null);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
+  const searchDataBoxRef = useRef(null);
+  const isOverflow = useIsOverflow(searchDataBoxRef);
 
   function handleClickOutside(e) {
     if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -35,12 +38,21 @@ function Search({ onSearchClose }) {
     if (state.recentSearch.length === recentData.length) return;
 
     const result = [...recentData];
-    state.recentSearch.map((item) => {
-      result.push(item);
-    });
 
-    setRecentData(result);
-  }, [state]);
+    if (isOverflow) {
+      handleDeleteClick(state.recentSearch[0].id);
+    }
+
+    if (result.length === 0) {
+      state.recentSearch.map((item) => {
+        result.push(item);
+      });
+    } else {
+      result.reverse().concat(state.recentSearch.at(-1));
+    }
+
+    setRecentData(result.reverse());
+  }, [state.recentSearch, isOverflow]);
 
   const getKeyword = async (search) => {
     try {
@@ -71,7 +83,7 @@ function Search({ onSearchClose }) {
 
   const onSearch = (isRecent) => {
     // 검색 버튼 클릭 or 엔터
-    if (!isRecent) {
+    if (!isRecent && input.current !== state.recentSearch.at(-1)?.value) {
       setRecentSearch(dispatch, true, input.current);
     }
     navigation(`/search?query=${input.current}`);
@@ -79,7 +91,7 @@ function Search({ onSearchClose }) {
   };
 
   const handleOnKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.isComposing) {
       e.preventDefault();
       onSearch(false);
     }
@@ -146,7 +158,7 @@ function Search({ onSearchClose }) {
               </AutoKeywordContainer>
             )}
             <Title>최근 검색어</Title>
-            <ItemBox>
+            <ItemBox ref={searchDataBoxRef}>
               {recentData.length !== 0 &&
                 recentData.map((item) => {
                   return (
@@ -263,7 +275,6 @@ const ItemBox = styled.div`
   flex-direction: row;
   width: 38.75rem;
   height: 4rem;
-  overflow: hidden;
 `;
 
 const ItemWrapper = styled.div`
