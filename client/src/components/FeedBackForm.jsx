@@ -8,14 +8,11 @@ function FeedBackForm() {
   const onSubmit = async (data, e) => {
     const { name, email, content } = data;
     try {
-      await axios.post(
-        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute",
-        {
-          name: name,
-          email: email,
-          content: content,
-        }
-      );
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/contribute`, {
+        name: name,
+        email: email,
+        content: content,
+      });
 
       e.target.reset();
       alert("소중한 의견 감사합니다.");
