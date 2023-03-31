@@ -6,12 +6,14 @@ function FeedBackForm() {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
-    const response = await axios.post(
-      "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute",
-      data
-    );
-
-    console.log(response);
+    try {
+      await axios.post(
+        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute",
+        data
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
