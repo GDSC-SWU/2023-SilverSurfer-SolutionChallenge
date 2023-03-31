@@ -10,7 +10,8 @@
 6. [Demo Video](#demo-video)
 7. [Design](#design)
 8. [How to Start](#how-to-start)
-9. [Contribution](#contribution)
+9. [How to Run Our Service on Local](#how-to-run-our-service-on-local)
+10. [Contribution](#contribution)
 
 <br/>
 
@@ -80,6 +81,68 @@ https://youtu.be/Fk8QXYKD50U
 ## How to Start
 ### Visit Deployed Service
 https://silver-surfer-376919.du.r.appspot.com/
+
+<br/>
+
+## How to Run Our Service on Local
+#### 1. Clone this repository
+```zsh
+git clone https://github.com/GDSC-SWU/2023-SilverSurfer-SolutionChallenge.git
+```
+#### 2. Move to backend directory
+```zsh
+cd server
+```
+#### 3. Create `.env` file
+```env
+# For Database
+SERVER_PORT=[YOUR_SERVER_PORT]
+DATABASE_SPRINT_HOST=[YOUR_DATABASE_HOST]
+DATABASE_SPRINT_USER=[YOUR_DATABASE_USER]
+DATABASE_SPRINT_PASSWORD=[YOUR_DATABASE_PASSWORD]
+DATABASE_NAME=[YOUR_DATABASE_NAME]
+
+# For Authentication
+FE_CLIENT_ID=[YOUR_GOOGLE_OAUTH2_CLIENT_ID]
+JWT_SECRET=[YOUR_JWT_SECRET_KEY]
+
+# For Redis
+REDIS_HOST=[YOUR_REDIS_SERVER_HOST]
+REDIS_PORT=[YOUR_REDIS_SERVER_PORT]
+REDIS_PASSWORD=[YOUR_REDIS_DATABASE_PASSWORD]
+
+# For CORS policy
+CORS_DOMAIN_LOCAL=[YOUR_APP_URL]
+```
+#### 4. Install dependencies
+```zsh
+npm install
+```
+#### 5. Run the server
+```zsh
+node server
+```
+#### 6. Move to frontend directory
+```zsh
+cd ..
+cd client
+```
+#### 7. Create `.env` file
+```env
+# For Authentication (Google OAuth 2.0)
+REACT_APP_GOOGLE_CLIENT_ID=[YOUR_GOOGLE_OAUTH2_CLIENT_ID]
+
+# For API
+REACT_APP_API_BASE_URL=[YOUR_SERVER_URL]
+```
+#### 8. Install dependencies
+```zsh
+npm install
+```
+#### 9. Run the app
+```zsh
+npm start
+```
 
 <br/>
 
