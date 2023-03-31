@@ -3,15 +3,25 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 
 function FeedBackForm() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
-  const onSubmit = async (data) => {
-    const response = await axios.post(
-      "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute",
-      data
-    );
+  const onSubmit = async (data, e) => {
+    const { name, email, content } = data;
+    try {
+      await axios.post(
+        "https://server-1-dot-silver-surfer-376919.du.r.appspot.com/contribute",
+        {
+          name: name,
+          email: email,
+          content: content,
+        }
+      );
 
-    console.log(response);
+      e.target.reset();
+      alert("소중한 의견 감사합니다.");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -23,7 +33,9 @@ function FeedBackForm() {
         </Wrapper>
         <InputTextBox placeholder="내용*" {...register("content")} />
 
-        <PostFormButton type="submit">보내기</PostFormButton>
+        <PostFormButton type="submit" onClick={reset}>
+          보내기
+        </PostFormButton>
       </FormWrapper>
     </form>
   );

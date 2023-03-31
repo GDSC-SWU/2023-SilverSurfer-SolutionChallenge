@@ -1,17 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import API from "../../API/API";
+import useIsOverflow from "../../hooks/useIsOverflow";
 import searchIcon from "../../assets/icon/icon_search.svg";
+import setRecentSearch from "../../store/setRecentSearch";
+import icon_delete from "../../assets/icon/icon_delete_button.svg";
 
 function Search({ onSearchClose }) {
   const navigation = useNavigate();
   const [keywords, setKeywords] = useState([]); // 자동완성 결과
+  const [recentData, setRecentData] = useState([]);
   const input = useRef(""); // 입력값
   const searchRef = useRef(null);
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const searchDataBoxRef = useRef(null);
+  const isOverflow = useIsOverflow(searchDataBoxRef);
 
   function handleClickOutside(e) {
-    console.log(searchRef.current);
     if (searchRef.current && !searchRef.current.contains(e.target)) {
       onSearchClose();
     }
@@ -24,6 +32,27 @@ function Search({ onSearchClose }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchRef]);
+
+  useEffect(() => {
+    if (state.recentSearch.length === 0) return;
+    if (state.recentSearch.length === recentData.length) return;
+
+    const result = [...recentData];
+
+    if (isOverflow) {
+      handleDeleteClick(state.recentSearch[0].id);
+    }
+
+    if (result.length === 0) {
+      state.recentSearch.map((item) => {
+        result.push(item);
+      });
+    } else {
+      result.reverse().concat(state.recentSearch.at(-1));
+    }
+
+    setRecentData(result.reverse());
+  }, [state.recentSearch, isOverflow]);
 
   const getKeyword = async (search) => {
     try {
@@ -52,15 +81,25 @@ function Search({ onSearchClose }) {
     }
   };
 
-  const onSearch = () => {
+  const onSearch = (isRecent) => {
     // 검색 버튼 클릭 or 엔터
+    if (!isRecent && input.current !== state.recentSearch.at(-1)?.value) {
+      setRecentSearch(dispatch, true, input.current);
+    }
     navigation(`/search?query=${input.current}`);
+    window.location.reload();
   };
 
   const handleOnKeyDown = (e) => {
-    if (e.key === "Enter") {
-      onSearch();
+    if (e.key === "Enter" && !e.isComposing) {
+      e.preventDefault();
+      onSearch(false);
     }
+  };
+
+  const handleDeleteClick = (id) => {
+    setRecentData(recentData.filter((item) => item.id !== id));
+    setRecentSearch(dispatch, false, id);
   };
 
   const matchInput = (word) => {
@@ -99,7 +138,7 @@ function Search({ onSearchClose }) {
                   id="searchBtn"
                   type="button"
                   style={{ display: "none" }}
-                  onClick={() => onSearch()}
+                  onClick={() => onSearch(false)}
                 />
               </InputWrapper>
             </form>
@@ -110,7 +149,7 @@ function Search({ onSearchClose }) {
                     key={idx}
                     onClick={() => {
                       input.current = word;
-                      onSearch();
+                      onSearch(false);
                     }}
                   >
                     {matchInput(word)}
@@ -119,10 +158,27 @@ function Search({ onSearchClose }) {
               </AutoKeywordContainer>
             )}
             <Title>최근 검색어</Title>
-            <ItemWrapper>
-              <Item>버튼</Item>
-              <Item>레이아웃</Item>
-            </ItemWrapper>
+            <ItemBox ref={searchDataBoxRef}>
+              {recentData.length !== 0 &&
+                recentData.map((item) => {
+                  return (
+                    <ItemWrapper key={item.id}>
+                      <Item
+                        onClick={() => {
+                          input.current = item.value;
+                          onSearch(true);
+                        }}
+                      >
+                        {item.value}
+                      </Item>
+                      <ItemDelete
+                        src={icon_delete}
+                        onClick={() => handleDeleteClick(item.id)}
+                      />
+                    </ItemWrapper>
+                  );
+                })}
+            </ItemBox>
           </ModalWrapper>
         </ModalBackground>
       </Wrapper>
@@ -212,19 +268,35 @@ const Title = styled.h4`
   margin-bottom: 1rem;
 `;
 
-const ItemWrapper = styled.div`
+const ItemBox = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
+  width: 38.75rem;
+  height: 4rem;
+`;
+
+const ItemWrapper = styled.div`
+  display: flex;
+  padding: 0.75rem;
+  margin-right: 0.75rem;
+  border: 1px solid #878787;
+  border-radius: 0.25rem;
 `;
 
 const Item = styled.div`
   font-size: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #878787;
-  border-radius: 0.25rem;
   margin-right: 0.75rem;
+  cursor: pointer;
+  max-width: 7.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ItemDelete = styled.img`
+  cursor: pointer;
 `;
 
 export default Search;

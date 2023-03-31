@@ -3,6 +3,8 @@ const initialState = {
   userName: null,
   accessToken: null,
   expireTime: null,
+  profileImage: null,
+  recentSearch: [],
 };
 
 // Reducer
@@ -14,6 +16,7 @@ const userReducer = (state = initialState, action) => {
         userName: action.userName,
         accessToken: action.accessToken,
         expireTime: action.expireTime,
+        profileImage: action.profileImage,
       };
     case "SIGNOUT":
       return {
@@ -21,6 +24,26 @@ const userReducer = (state = initialState, action) => {
         userName: null,
         accessToken: null,
         expireTime: null,
+        profileImage: null,
+        recentSearch: [],
+      };
+    case "SEARCH":
+      return {
+        ...state,
+        recentSearch: [
+          ...state.recentSearch,
+          {
+            id: action.id,
+            value: action.value,
+          },
+        ],
+      };
+    case "DELETE_SEARCH":
+      return {
+        ...state,
+        recentSearch: state.recentSearch.filter(
+          (item) => item.id !== action.id
+        ),
       };
     default:
       return state;

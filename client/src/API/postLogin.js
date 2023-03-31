@@ -4,7 +4,8 @@ import setUserInfo from "../store/setUserInfo";
 const setUserData = (dispatch, res) => {
   const accessToken = res.data.data.accessToken;
   const expireTime = new Date().getTime() + 60 * 1000 * 60;
-  setUserInfo(dispatch, "user", accessToken, expireTime); // redux setting
+  const profileImage = res.data.data.googleProfileImagePath;
+  setUserInfo(dispatch, "user", accessToken, expireTime, profileImage); // redux setting
 };
 
 export const postLogin = async (dispatch, credential) => {
@@ -21,7 +22,7 @@ export const postLogin = async (dispatch, credential) => {
       }
     ).then((res) => {
       setUserData(dispatch, res);
-      window.location.replace("/");
+      window.location.href = "/";
     });
   } catch (err) {
     console.error("server error");

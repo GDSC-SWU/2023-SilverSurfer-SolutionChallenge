@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
@@ -15,6 +15,8 @@ import icon_search from "../../assets/icon/icon_menu_search.svg";
 
 export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
   const authState = useSelector((state) => state);
+  const [profile, setProfile] = useState(icon_my);
+  const profileImagePath = authState.profileImage;
   const navigate = useNavigate();
 
   const onMainClick = () => {
@@ -29,6 +31,12 @@ export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
 
     navigate(link);
   };
+
+  useEffect(() => {
+    if (profileImagePath) {
+      setProfile(profileImagePath);
+    }
+  });
 
   return (
     <NavWrapper>
@@ -101,7 +109,7 @@ export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
       <SubMenuWrapper>
         <SubMenuContentBox onClick={onMypageClick}>
           <HoverBox type={"sub"}>
-            <SubMenuIcon src={icon_my} />
+            <SubMenuIcon isProfile={profileImagePath} src={profile} />
           </HoverBox>
         </SubMenuContentBox>
 
@@ -209,4 +217,6 @@ const SubMenuIcon = styled.img`
   width: 3.75rem;
   height: 3.75rem;
   display: block;
+  border-radius: 50%;
+  border: ${(props) => props.isProfile && "1px solid #94a3a7"};
 `;
