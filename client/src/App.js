@@ -5,6 +5,7 @@ import GuidePage from "./pages/Guide";
 import MyPage from "./pages/MyPage";
 import CardDetail from "./components/Card/CardDetail";
 import SearchResult from "./pages/SearchResultPage";
+import ProjectIntro from "./pages/ProjectIntro";
 import "./App.css";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Route path="/content/:postId" element={<CardDetail />} />
       <Route path="/mypage" element={<MyPage />} />
       <Route path="/search/*" element={<SearchResult />} />
+      <Route path="/intro" element={<ProjectIntro />} />
     </Routes>
   );
 }

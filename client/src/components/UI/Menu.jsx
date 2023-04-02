@@ -98,7 +98,11 @@ export default function Menu({ onMouseEnter, onMouseLeave, onSearchClick }) {
           </HoverBox>
         </MenuContentLink>
 
-        <MenuContentBox>
+        <MenuContentBox
+          onClick={() => {
+            navigate(`/intro`);
+          }}
+        >
           <HoverBox>
             <MenuIcon src={icon_project} />
             <MenuText>프로젝트 소개</MenuText>
