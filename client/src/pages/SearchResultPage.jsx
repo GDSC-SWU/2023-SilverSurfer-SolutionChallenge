@@ -130,9 +130,11 @@ function SearchResultPage() {
         },
       }).then((res) => {
         const result = [];
-        res.data.data.map((item) => {
-          result.push(item.postId);
-        });
+        if (res.data.data) {
+          res.data.data.map((item) => {
+            result.push(item.postId);
+          });
+        }
         setScrap(result);
       });
     } catch (error) {
