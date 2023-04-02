@@ -58,7 +58,7 @@ Aligned with the UN Sustainable Development Goals of __â€˜Reduced Inequalitiesâ€
 <br/>
 
 ## Our Website
-https://silver-surfer-376919.du.r.appspot.com/
+https://silversurfer-382505.du.r.appspot.com/
 
 <br/>
 
@@ -80,7 +80,7 @@ https://youtu.be/Fk8QXYKD50U
 
 ## How to Start
 ### Visit Deployed Service
-https://silver-surfer-376919.du.r.appspot.com/
+https://silversurfer-382505.du.r.appspot.com/
 
 <br/>
 
@@ -95,8 +95,10 @@ cd server
 ```
 #### 3. Create `.env` file
 ```env
-# For Database
+# For Creating HTTP Server
 SERVER_PORT=[YOUR_SERVER_PORT]
+
+# For Database
 DATABASE_SPRINT_HOST=[YOUR_DATABASE_HOST]
 DATABASE_SPRINT_USER=[YOUR_DATABASE_USER]
 DATABASE_SPRINT_PASSWORD=[YOUR_DATABASE_PASSWORD]
