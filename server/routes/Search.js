@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
       message = "No Result.";
     } else {
       // 타이틀, 설명 내 검색
-      query = `select postId, title, title_eng, explanation from Contents
+      query = `select postId, title, title_eng, explanation, thumbnailImagePath from Contents
             where   category like "%${search}%" or 
                     title like "%${search}%" or
                     title_eng like "%${search}%" or
@@ -33,19 +33,7 @@ router.get("/", async (req, res) => {
       [result] = await conn.query(query);
     }
 
-    if (result !== null && result[0] !== undefined) {
-      // 검색 결과가 존재할 경우 -> 썸네일 이미지 조회
-      for (let i = 0; i < result.length; i++) {
-        query = `select imagePath from Contents_Image where postId = ${result[i].postId} order by paragraphId asc limit 1`;
-        const [imageRows] = await conn.query(query);
-
-        if (imageRows[0]) {
-          result[i].thumbnailImagePath = imageRows[0].imagePath;
-        } else {
-          result[i].thumbnailImagePath = null;
-        }
-      }
-    } else {
+    if (result[0] === undefined) {
       // 검색 결과 없음
       result = null;
       message = "No Result.";
