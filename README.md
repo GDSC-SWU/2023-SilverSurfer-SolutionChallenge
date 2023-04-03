@@ -126,7 +126,6 @@ node server
 ```
 #### 6. Move to frontend directory
 ```zsh
-cd ..
 cd client
 ```
 #### 7. Create `.env` file
